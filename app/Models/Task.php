@@ -12,8 +12,8 @@ class Task extends Model
 
     protected $fillable = [
         'project_id',
+        'subproject_id',
         'name',
-        'pic_id',
         'start_date',
         'due_date',
         'actual_start_date',
@@ -40,9 +40,14 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function pic()
+    public function subproject()
     {
-        return $this->belongsTo(User::class, 'pic_id');
+        return $this->belongsTo(Subproject::class);
+    }
+
+    public function pics()
+    {
+        return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id');
     }
 
     public function creator()
@@ -77,7 +82,8 @@ class Task extends Model
         $start = $this->start_date ? $this->start_date->format('Ymd') : now()->format('Ymd');
         $end   = $this->due_date  ? $this->due_date->copy()->addDay()->format('Ymd') : now()->addDay()->format('Ymd');
         $title = urlencode('[TaskFlow] ' . $this->name);
-        $desc  = urlencode('Project: ' . ($this->project->name ?? '') . ' | PIC: ' . ($this->pic->name ?? ''));
+        $picNames = $this->pics->pluck('name')->join(', ');
+        $desc  = urlencode('Project: ' . ($this->project->name ?? '') . ' | PIC: ' . $picNames);
         return "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$title}&dates={$start}/{$end}&details={$desc}";
     }
 

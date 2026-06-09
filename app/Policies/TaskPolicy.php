@@ -16,7 +16,7 @@ class TaskPolicy
         // Admin & Manager can update any task
         if ($user->isAdminOrManager()) return true;
         // Member can only update their own tasks
-        if ($user->isMember()) return $task->pic_id === $user->id;
+        if ($user->isMember()) return $task->pics()->where('users.id', $user->id)->exists();
         return false;
     }
 

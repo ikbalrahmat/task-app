@@ -11,6 +11,7 @@ use App\Http\Controllers\GanttController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SubprojectController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('projects', ProjectController::class);
+    Route::resource('subprojects', SubprojectController::class);
     
     Route::resource('tasks', TaskController::class);
     Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store'])->name('tasks.comments.store');

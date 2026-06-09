@@ -18,33 +18,33 @@ class TaskReminderCommand extends Command
 
         foreach ($thresholds as $days) {
             $date  = now()->addDays($days)->toDateString();
-            $tasks = Task::with(['pic', 'project'])
+            $tasks = Task::with(['pics', 'project'])
                 ->where('due_date', $date)
                 ->where('status', '!=', 'Selesai')
-                ->whereNotNull('pic_id')
+                ->whereHas('pics')
                 ->get();
 
             foreach ($tasks as $task) {
-                if ($task->pic) {
+                foreach ($task->pics as $pic) {
                     $type = $days === 0 ? 'hari_h' : "h_minus_{$days}";
-                    $task->pic->notify(new TaskDeadlineNotification($task, $type));
-                    $this->info("Reminder terkirim: {$task->name} → {$task->pic->name} (H-{$days})");
-                    Log::info("TaskReminder: task_id={$task->id}, pic={$task->pic->email}, days={$days}");
+                    $pic->notify(new TaskDeadlineNotification($task, $type));
+                    $this->info("Reminder terkirim: {$task->name} → {$pic->name} (H-{$days})");
+                    Log::info("TaskReminder: task_id={$task->id}, pic={$pic->email}, days={$days}");
                 }
             }
         }
 
         // Overdue tasks
-        $overdue = Task::with(['pic', 'project'])
+        $overdue = Task::with(['pics', 'project'])
             ->where('due_date', '<', now()->toDateString())
             ->where('status', '!=', 'Selesai')
-            ->whereNotNull('pic_id')
+            ->whereHas('pics')
             ->get();
 
         foreach ($overdue as $task) {
-            if ($task->pic) {
-                $task->pic->notify(new TaskDeadlineNotification($task, 'overdue'));
-                $this->warn("Overdue: {$task->name} → {$task->pic->name}");
+            foreach ($task->pics as $pic) {
+                $pic->notify(new TaskDeadlineNotification($task, 'overdue'));
+                $this->warn("Overdue: {$task->name} → {$pic->name}");
             }
         }
 

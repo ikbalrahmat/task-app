@@ -19,7 +19,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     public function find(int $id)
     {
-        return Project::with(['tasks.pic', 'creator'])->findOrFail($id);
+        return Project::with(['tasks.pics', 'creator', 'subprojects.tasks.pics'])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -41,7 +41,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     private function buildQuery(array $filters = [])
     {
-        $query = Project::with(['tasks', 'creator']);
+        $query = Project::with(['tasks', 'creator', 'subprojects']);
 
         if (!empty($filters['search'])) {
             $query->where('name', 'like', '%' . $filters['search'] . '%');

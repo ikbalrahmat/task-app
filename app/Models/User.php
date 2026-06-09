@@ -47,7 +47,7 @@ class User extends Authenticatable
     // Relations
     public function tasks()
     {
-        return $this->hasMany(Task::class, 'pic_id');
+        return $this->belongsToMany(Task::class, 'task_user', 'user_id', 'task_id');
     }
 
     public function comments()

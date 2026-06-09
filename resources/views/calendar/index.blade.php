@@ -40,33 +40,33 @@
 {{-- Nav --}}
 <div class="flex items-center justify-between mb-6">
     <a href="{{ route('calendar', ['month' => $prevMonth->month, 'year' => $prevMonth->year]) }}"
-       class="flex items-center gap-2 bg-[#1a1d27] border border-[#333650] text-slate-300 hover:text-white hover:border-blue-500 px-4 py-2 rounded-xl text-sm transition-all">
+       class="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-all">
         ← Sebelumnya
     </a>
-    <h2 class="text-xl font-bold text-white">{{ $monthNames[$month] }} {{ $year }}</h2>
+    <h2 class="text-xl font-bold text-slate-800">{{ $monthNames[$month] }} {{ $year }}</h2>
     <a href="{{ route('calendar', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}"
-       class="flex items-center gap-2 bg-[#1a1d27] border border-[#333650] text-slate-300 hover:text-white hover:border-blue-500 px-4 py-2 rounded-xl text-sm transition-all">
+       class="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-all">
         Berikutnya →
     </a>
 </div>
 
 {{-- Legend --}}
-<div class="flex items-center gap-4 mb-4 text-xs">
-    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span> Tanggal Mulai</div>
-    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Due Date</div>
+<div class="flex items-center gap-4 mb-4 text-xs text-slate-500 font-medium">
+    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Tanggal Mulai</div>
+    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Due Date</div>
 </div>
 
-<div class="bg-[#1a1d27] border border-[#333650] rounded-2xl overflow-hidden">
+<div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
     {{-- Day Names --}}
-    <div class="grid grid-cols-7 bg-[#222535]">
+    <div class="grid grid-cols-7 bg-slate-50 border-b border-slate-200">
         @foreach($dayNames as $d)
-            <div class="py-3 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">{{ $d }}</div>
+            <div class="py-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">{{ $d }}</div>
         @endforeach
     </div>
     {{-- Days Grid --}}
-    <div class="grid grid-cols-7 divide-x divide-y divide-[#333650] border-t border-[#333650]">
+    <div class="grid grid-cols-7 divide-x divide-y divide-slate-100 border-t border-slate-100">
         @for($i = 0; $i < $startDow; $i++)
-            <div class="cal-day p-2 bg-[#111320]"></div>
+            <div class="cal-day p-2 bg-slate-50/50"></div>
         @endfor
 
         @for($day = 1; $day <= $daysInMonth; $day++)
@@ -75,28 +75,28 @@
                 $isToday  = $dateStr === $today->format('Y-m-d');
                 $dayTasks = $tasksByDate[$dateStr] ?? [];
             @endphp
-            <div class="cal-day p-2 {{ $isToday ? 'bg-blue-950/30' : '' }} hover:bg-[#2a2e42] transition-colors">
-                <div class="flex items-center justify-center w-7 h-7 rounded-full mb-1 {{ $isToday ? 'bg-blue-500 text-white font-bold' : 'text-slate-400' }} text-sm">
+            <div class="cal-day p-2 {{ $isToday ? 'bg-blue-50/40' : '' }} hover:bg-slate-50/80 transition-colors">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full mb-1.5 {{ $isToday ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-500/20' : 'text-slate-500 font-semibold' }} text-xs">
                     {{ $day }}
                 </div>
                 @foreach(array_slice($dayTasks, 0, 3) as $item)
                     <a href="{{ route('tasks.show', $item['task']->id) }}"
                        title="{{ $item['task']->name }}"
-                       class="cal-event block {{ $item['type'] === 'start' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300' }}">
+                       class="cal-event block border transition-all {{ $item['type'] === 'start' ? 'bg-emerald-50/60 text-emerald-700 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/60 text-rose-700 border-rose-100 hover:bg-rose-100/50' }}">
                         {{ $item['task']->name }}
                     </a>
                 @endforeach
                 @if(count($dayTasks) > 3)
-                    <div class="text-[9px] text-slate-400 pl-1">+{{ count($dayTasks) - 3 }} lainnya</div>
+                    <div class="text-[9px] font-medium text-slate-400 pl-1 mt-1">+{{ count($dayTasks) - 3 }} lainnya</div>
                 @endif
             </div>
         @endfor
     </div>
 </div>
 
-<div class="mt-4 flex items-center justify-center">
+<div class="mt-6 flex items-center justify-center">
     <a href="{{ route('calendar', ['month' => $today->month, 'year' => $today->year]) }}"
-       class="bg-[#222535] border border-[#333650] text-slate-300 hover:text-white px-4 py-2 rounded-xl text-sm transition-colors">
+       class="bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all">
         Hari Ini
     </a>
 </div>

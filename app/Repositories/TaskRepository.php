@@ -19,18 +19,27 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function find(int $id)
     {
-        return Task::with(['project', 'pic', 'comments.user', 'attachments.uploader', 'creator'])->findOrFail($id);
+        return Task::with(['project', 'pics', 'comments.user', 'attachments.uploader', 'creator'])->findOrFail($id);
     }
 
     public function create(array $data)
     {
-        return Task::create($data);
+        $picIds = $data['pic_ids'] ?? [];
+        unset($data['pic_ids']);
+        
+        $task = Task::create($data);
+        $task->pics()->sync($picIds);
+        return $task;
     }
 
     public function update(int $id, array $data)
     {
+        $picIds = $data['pic_ids'] ?? [];
+        unset($data['pic_ids']);
+
         $task = Task::findOrFail($id);
         $task->update($data);
+        $task->pics()->sync($picIds);
         return $task;
     }
 
@@ -41,7 +50,7 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function getOverdue()
     {
-        return Task::with(['project', 'pic'])
+        return Task::with(['project', 'pics'])
             ->where('due_date', '<', now()->toDateString())
             ->where('status', '!=', 'Selesai')
             ->orderBy('due_date')
@@ -50,7 +59,7 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function getUpcomingDeadlines(int $days = 7)
     {
-        return Task::with(['project', 'pic'])
+        return Task::with(['project', 'pics'])
             ->where('status', '!=', 'Selesai')
             ->where('due_date', '>=', now()->toDateString())
             ->where('due_date', '<=', now()->addDays($days)->toDateString())
@@ -60,7 +69,7 @@ class TaskRepository implements TaskRepositoryInterface
 
     private function buildQuery(array $filters = [])
     {
-        $query = Task::with(['project', 'pic']);
+        $query = Task::with(['project', 'pics']);
 
         if (!empty($filters['search'])) {
             $query->where('name', 'like', '%' . $filters['search'] . '%');
@@ -69,7 +78,7 @@ class TaskRepository implements TaskRepositoryInterface
             $query->where('project_id', $filters['project_id']);
         }
         if (!empty($filters['pic_id'])) {
-            $query->where('pic_id', $filters['pic_id']);
+            $query->whereHas('pics', fn($q) => $q->where('users.id', $filters['pic_id']));
         }
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);

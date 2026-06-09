@@ -12,8 +12,10 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             'project_id'  => 'required|exists:projects,id',
+            'subproject_id' => 'nullable|exists:subprojects,id',
             'name'        => 'required|string|max:255',
-            'pic_id'      => 'nullable|exists:users,id',
+            'pic_ids'     => 'nullable|array',
+            'pic_ids.*'   => 'exists:users,id',
             'start_date'        => 'nullable|date',
             'due_date'          => 'nullable|date|after_or_equal:start_date',
             'actual_start_date' => 'nullable|date',

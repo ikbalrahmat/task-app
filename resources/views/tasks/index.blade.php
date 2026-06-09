@@ -7,28 +7,28 @@
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
     <form method="GET" class="flex flex-wrap items-center gap-3">
         <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Cari task..."
-               class="bg-[#1a1d27] border border-[#333650] text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 min-w-[180px]">
-        <select name="project_id" class="bg-[#1a1d27] border border-[#333650] text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
+               class="bg-white border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-w-[180px]">
+        <select name="project_id" class="bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
             <option value="">Semua Project</option>
             @foreach($projects as $proj)
                 <option value="{{ $proj->id }}" {{ ($filters['project_id'] ?? '') == $proj->id ? 'selected' : '' }}>{{ $proj->name }}</option>
             @endforeach
         </select>
-        <select name="pic_id" class="bg-[#1a1d27] border border-[#333650] text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
+        <select name="pic_id" class="bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
             <option value="">Semua PIC</option>
             @foreach($users as $user)
                 <option value="{{ $user->id }}" {{ ($filters['pic_id'] ?? '') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
             @endforeach
         </select>
-        <select name="status" class="bg-[#1a1d27] border border-[#333650] text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
+        <select name="status" class="bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
             <option value="">Semua Status</option>
             @foreach(\App\Models\Task::STATUSES as $s)
                 <option value="{{ $s }}" {{ ($filters['status'] ?? '') == $s ? 'selected' : '' }}>{{ $s }}</option>
             @endforeach
         </select>
-        <button type="submit" class="bg-[#222535] border border-[#333650] text-white px-4 py-2.5 rounded-xl text-sm hover:bg-[#2a2e42] transition-colors">Filter</button>
+        <button type="submit" class="bg-slate-100 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-200 transition-colors">Filter</button>
         @if(!empty(array_filter($filters)))
-            <a href="{{ route('tasks.index') }}" class="text-slate-400 hover:text-white text-sm">Reset</a>
+            <a href="{{ route('tasks.index') }}" class="text-slate-500 hover:text-slate-800 text-sm">Reset</a>
         @endif
     </form>
     @can('create', \App\Models\Task::class)
@@ -39,11 +39,11 @@
     @endcan
 </div>
 
-<div class="bg-[#1a1d27] border border-[#333650] rounded-2xl overflow-hidden">
+<div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="bg-[#222535] text-slate-400 text-xs uppercase tracking-wider">
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
                     <th class="px-5 py-4 text-left font-semibold">Nama Task</th>
                     <th class="px-5 py-4 text-left font-semibold">Project</th>
                     <th class="px-5 py-4 text-left font-semibold">PIC</th>
@@ -53,73 +53,91 @@
                     <th class="px-5 py-4 text-center font-semibold">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-[#333650]">
+            <tbody class="divide-y divide-slate-100">
                 @forelse($tasks as $task)
-                <tr class="hover:bg-[#222535] transition-colors">
+                <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-5 py-4">
-                        <a href="{{ route('tasks.show', $task->id) }}" class="font-semibold text-white hover:text-blue-400 transition-colors">
+                        <a href="{{ route('tasks.show', $task->id) }}" class="font-semibold text-slate-855 text-slate-800 hover:text-blue-600 transition-colors">
                             {{ $task->name }}
                         </a>
                     </td>
                     <td class="px-5 py-4">
-                        <a href="{{ route('projects.show', $task->project_id) }}" class="text-slate-300 hover:text-blue-400 transition-colors text-xs">
+                        <a href="{{ route('projects.show', $task->project_id) }}" class="text-slate-500 hover:text-blue-600 transition-colors text-xs">
                             {{ $task->project->name ?? '-' }}
                         </a>
+                        @if($task->subproject)
+                            <span class="text-slate-400 text-[10px] block font-medium mt-0.5">/ {{ $task->subproject->name }}</span>
+                        @endif
                     </td>
                     <td class="px-5 py-4">
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-lg bg-blue-950 flex items-center justify-center text-blue-400 text-xs font-bold shrink-0">
-                                {{ strtoupper(substr($task->pic->name ?? '?', 0, 2)) }}
+                        @if($task->pics->count() === $users->count() && $users->count() > 0)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-100">
+                                Semua PIC (ALL)
+                            </span>
+                        @else
+                            <div class="flex items-center -space-x-1.5 overflow-hidden">
+                                @foreach($task->pics->take(3) as $pic)
+                                    <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-[10px] font-bold shrink-0 ring-2 ring-white" title="{{ $pic->name }}">
+                                        {{ strtoupper(substr($pic->name, 0, 2)) }}
+                                    </div>
+                                @endforeach
+                                @if($task->pics->count() > 3)
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 text-[10px] font-bold shrink-0 ring-2 ring-white" title="Dan {{ $task->pics->count() - 3 }} lainnya">
+                                        +{{ $task->pics->count() - 3 }}
+                                    </div>
+                                @endif
+                                @if($task->pics->isEmpty())
+                                    <span class="text-slate-400 text-xs">-</span>
+                                @endif
                             </div>
-                            <span class="text-slate-300 text-xs">{{ $task->pic->name ?? '-' }}</span>
-                        </div>
+                        @endif
                     </td>
                     <td class="px-5 py-4 text-xs">
                         @if($task->due_date)
-                            <span class="{{ $task->isOverdue() ? 'text-red-400 font-semibold' : 'text-slate-300' }}">
+                            <span class="{{ $task->isOverdue() ? 'text-red-600 font-semibold' : 'text-slate-600' }}">
                                 {{ $task->due_date->format('d M Y') }}
                             </span>
                             @if($task->isOverdue())
-                                <div class="text-red-400 text-[10px]">Overdue</div>
+                                <div class="text-red-600 text-[10px] font-semibold">Overdue</div>
                             @elseif($task->days_until_due <= 7 && $task->days_until_due >= 0)
-                                <div class="text-amber-500 text-[10px]">H-{{ $task->days_until_due }}</div>
+                                <div class="text-amber-600 text-[10px] font-semibold">H-{{ $task->days_until_due }}</div>
                             @endif
                         @else
-                            <span class="text-slate-300">-</span>
+                            <span class="text-slate-500">-</span>
                         @endif
                     </td>
                     <td class="px-5 py-4 min-w-[130px]">
                         <div class="flex items-center gap-2">
-                            <div class="flex-1 bg-[#222535] rounded-full h-1.5">
+                            <div class="flex-1 bg-slate-100 rounded-full h-1.5">
                                 @php $p = $task->progress; @endphp
                                 <div class="h-1.5 rounded-full" style="width:{{ $p }}%; background: {{ $p >= 75 ? '#22c55e' : ($p >= 40 ? '#4f80ff' : '#f59e0b') }}"></div>
                             </div>
-                            <span class="text-xs text-slate-400 w-8 shrink-0">{{ $p }}%</span>
+                            <span class="text-xs text-slate-500 w-8 shrink-0">{{ $p }}%</span>
                         </div>
                     </td>
                     <td class="px-5 py-4">
                         @php
                             $ts = match($task->status) {
-                                'Berjalan'    => 'bg-blue-950 text-blue-400 border-blue-900/50',
-                                'Selesai'     => 'bg-green-950 text-green-400 border-green-900/50',
-                                'Belum Mulai' => 'bg-[#222535] text-slate-400 border-[#333650]',
-                                'Overdue'     => 'bg-red-950 text-red-400 border-red-900/50',
-                                default       => 'bg-[#222535] text-slate-400',
+                                'Berjalan'    => 'bg-blue-50 text-blue-600 border-blue-100',
+                                'Selesai'     => 'bg-green-50 text-green-600 border-green-100',
+                                'Belum Mulai' => 'bg-slate-50 text-slate-500 border-slate-200',
+                                'Overdue'     => 'bg-red-50 text-red-600 border-red-100',
+                                default       => 'bg-slate-50 text-slate-500 border-slate-200',
                             };
                         @endphp
                         <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border {{ $ts }}">{{ $task->status }}</span>
                     </td>
                     <td class="px-5 py-4">
                         <div class="flex items-center justify-center gap-1">
-                            <a href="{{ route('tasks.show', $task->id) }}" class="p-2 text-slate-400 hover:text-blue-400 hover:bg-blue-950/30 rounded-lg transition-colors" title="Detail">👁</a>
+                            <a href="{{ route('tasks.show', $task->id) }}" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Detail">👁</a>
                             @can('update', $task)
-                            <a href="{{ route('tasks.edit', $task->id) }}" class="p-2 text-slate-400 hover:text-amber-400 hover:bg-amber-950/30 rounded-lg transition-colors" title="Edit">✏️</a>
+                            <a href="{{ route('tasks.edit', $task->id) }}" class="p-2 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">✏️</a>
                             @endcan
                             @can('delete', $task)
                             <form method="POST" action="{{ route('tasks.destroy', $task->id) }}"
                                   onsubmit="return confirm('Hapus task ini?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors" title="Hapus">🗑</button>
+                                <button type="submit" class="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">🗑</button>
                             </form>
                             @endcan
                         </div>
@@ -127,9 +145,9 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-16 text-center text-slate-400">
+                    <td colspan="7" class="px-6 py-16 text-center text-slate-500">
                         <div class="text-4xl mb-3">✅</div>
-                        <div class="font-semibold text-white mb-1">Belum ada task</div>
+                        <div class="font-semibold text-slate-800 mb-1">Belum ada task</div>
                         <p class="text-sm">Tambahkan task pertama Anda.</p>
                     </td>
                 </tr>
@@ -138,7 +156,7 @@
         </table>
     </div>
     @if($tasks->hasPages())
-    <div class="px-6 py-4 border-t border-[#333650]">{{ $tasks->links() }}</div>
+    <div class="px-6 py-4 border-t border-slate-100">{{ $tasks->links() }}</div>
     @endif
 </div>
 @endsection

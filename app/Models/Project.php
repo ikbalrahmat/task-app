@@ -37,6 +37,11 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function subprojects()
+    {
+        return $this->hasMany(Subproject::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
