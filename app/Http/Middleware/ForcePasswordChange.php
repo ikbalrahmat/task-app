@@ -22,11 +22,6 @@ class ForcePasswordChange
                 return $next($request);
             }
 
-            // If MFA is pending for the admin, let MFA middleware/controller handle it first
-            if (session('mfa_pending') === true) {
-                return $next($request);
-            }
-
             // Exclude logout and change-password routes from redirection
             $excludedRoutes = [
                 'logout',
