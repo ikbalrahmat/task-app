@@ -29,17 +29,40 @@ class TaskRepository implements TaskRepositoryInterface
         
         $task = Task::create($data);
         $task->pics()->sync($picIds);
+
+        foreach ($picIds as $userId) {
+            if ($userId != auth()->id()) {
+                $user = \App\Models\User::find($userId);
+                if ($user) {
+                    $user->notify(new \App\Notifications\TaskAssignedNotification($task));
+                }
+            }
+        }
         return $task;
     }
 
     public function update(int $id, array $data)
     {
-        $picIds = $data['pic_ids'] ?? [];
+        $task = Task::findOrFail($id);
+
+        if (array_key_exists('pic_ids', $data)) {
+            $picIds = $data['pic_ids'] ?? [];
+            $oldPicIds = $task->pics->pluck('id')->toArray();
+            $task->pics()->sync($picIds);
+
+            $newPicIds = array_diff($picIds, $oldPicIds);
+            foreach ($newPicIds as $userId) {
+                if ($userId != auth()->id()) {
+                    $user = \App\Models\User::find($userId);
+                    if ($user) {
+                        $user->notify(new \App\Notifications\TaskAssignedNotification($task));
+                    }
+                }
+            }
+        }
         unset($data['pic_ids']);
 
-        $task = Task::findOrFail($id);
         $task->update($data);
-        $task->pics()->sync($picIds);
         return $task;
     }
 
@@ -50,26 +73,40 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function getOverdue()
     {
-        return Task::with(['project', 'pics'])
+        $query = Task::with(['project', 'pics'])
             ->where('due_date', '<', now()->toDateString())
             ->where('status', '!=', 'Selesai')
-            ->orderBy('due_date')
-            ->get();
+            ->orderBy('due_date');
+
+        if (auth()->check() && !auth()->user()->hasCrudAccess()) {
+            $query->whereHas('pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
+
+        return $query->get();
     }
 
     public function getUpcomingDeadlines(int $days = 7)
     {
-        return Task::with(['project', 'pics'])
+        $query = Task::with(['project', 'pics'])
             ->where('status', '!=', 'Selesai')
             ->where('due_date', '>=', now()->toDateString())
             ->where('due_date', '<=', now()->addDays($days)->toDateString())
-            ->orderBy('due_date')
-            ->get();
+            ->orderBy('due_date');
+
+        if (auth()->check() && !auth()->user()->hasCrudAccess()) {
+            $query->whereHas('pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
+
+        return $query->get();
     }
 
     private function buildQuery(array $filters = [])
     {
         $query = Task::with(['project', 'pics']);
+
+        if (auth()->check() && !auth()->user()->hasCrudAccess()) {
+            $query->whereHas('pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
 
         if (!empty($filters['search'])) {
             $query->where('name', 'like', '%' . $filters['search'] . '%');

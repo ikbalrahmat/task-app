@@ -14,6 +14,10 @@ class SubprojectController extends Controller
     {
         $query = Subproject::with('project', 'tasks');
 
+        if (!auth()->user()->hasCrudAccess()) {
+            $query->whereHas('tasks.pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
+
         if ($request->filled('project_id')) {
             $query->where('project_id', $request->project_id);
         }
@@ -23,7 +27,12 @@ class SubprojectController extends Controller
         }
 
         $subprojects = $query->latest()->paginate(10)->withQueryString();
-        $projects = Project::orderBy('name')->get();
+        
+        if (!auth()->user()->hasCrudAccess()) {
+            $projects = Project::whereHas('tasks.pics', fn($q) => $q->where('users.id', auth()->id()))->orderBy('name')->get();
+        } else {
+            $projects = Project::orderBy('name')->get();
+        }
 
         return view('subprojects.index', compact('subprojects', 'projects'));
     }
@@ -63,6 +72,9 @@ class SubprojectController extends Controller
 
     public function show(Subproject $subproject)
     {
+        if (!auth()->user()->hasCrudAccess() && !$subproject->tasks()->whereHas('pics', fn($q) => $q->where('users.id', auth()->id()))->exists()) {
+            abort(403);
+        }
         $subproject->load('project', 'tasks.pics');
         return view('subprojects.show', compact('subproject'));
     }

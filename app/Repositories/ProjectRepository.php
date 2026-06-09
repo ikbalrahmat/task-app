@@ -43,6 +43,10 @@ class ProjectRepository implements ProjectRepositoryInterface
     {
         $query = Project::with(['tasks', 'creator', 'subprojects']);
 
+        if (auth()->check() && !auth()->user()->hasCrudAccess()) {
+            $query->whereHas('tasks.pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
+
         if (!empty($filters['search'])) {
             $query->where('name', 'like', '%' . $filters['search'] . '%');
         }

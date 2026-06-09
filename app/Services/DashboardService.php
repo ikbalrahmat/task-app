@@ -17,7 +17,13 @@ class DashboardService
     public function getStats(int $year): array
     {
         $projects = $this->projectRepo->all(['year' => $year]);
-        $tasks    = Task::whereHas('project', fn($q) => $q->where('year', $year))->get();
+        
+        $tasksQuery = Task::whereHas('project', fn($q) => $q->where('year', $year));
+        if (auth()->check() && !auth()->user()->hasCrudAccess()) {
+            $tasksQuery->whereHas('pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
+        $tasks = $tasksQuery->get();
+        
         $overdue  = $this->taskRepo->getOverdue();
 
         $totalProgress = $projects->count()
@@ -47,11 +53,16 @@ class DashboardService
 
     public function getActiveTasks(int $year, int $limit = 10)
     {
-        return Task::with(['project', 'pics'])
+        $query = Task::with(['project', 'pics'])
             ->whereHas('project', fn($q) => $q->where('year', $year))
             ->where('status', '!=', 'Selesai')
             ->orderBy('due_date')
-            ->limit($limit)
-            ->get();
+            ->limit($limit);
+
+        if (auth()->check() && !auth()->user()->hasCrudAccess()) {
+            $query->whereHas('pics', fn($q) => $q->where('users.id', auth()->id()));
+        }
+
+        return $query->get();
     }
 }

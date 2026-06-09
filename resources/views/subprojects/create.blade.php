@@ -13,10 +13,10 @@
                   actualStartDate: '{{ old('actual_start_date') }}',
                   actualEndDate: '{{ old('actual_end_date') }}',
                   isStartDeviated() {
-                      return this.startDate && this.actualStartDate && this.startDate !== this.actualStartDate;
+                      return !!(this.startDate && this.actualStartDate && this.startDate !== this.actualStartDate);
                   },
                   isEndDeviated() {
-                      return this.endDate && this.actualEndDate && this.endDate !== this.actualEndDate;
+                      return !!(this.endDate && this.actualEndDate && this.endDate !== this.actualEndDate);
                   }
               }">
             @csrf
@@ -76,7 +76,7 @@
                 <label class="block text-sm font-medium text-slate-700 mb-2">Keterangan Realisasi Mulai <span class="text-red-600">*</span></label>
                 <textarea name="actual_start_remarks" rows="2" placeholder="Jelaskan alasan perbedaan tanggal realisasi mulai dengan rencana..."
                           class="w-full bg-white border @error('actual_start_remarks') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-slate-200 focus:border-blue-500 focus:ring-blue-500 @enderror text-slate-900 placeholder-slate-400 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
-                          :required="isStartDeviated()">{{ old('actual_start_remarks') }}</textarea>
+                          :required="isStartDeviated()" :disabled="!isStartDeviated()">{{ old('actual_start_remarks') }}</textarea>
                 @error('actual_start_remarks')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
             </div>
 
@@ -85,7 +85,7 @@
                 <label class="block text-sm font-medium text-slate-700 mb-2">Keterangan Realisasi Selesai <span class="text-red-600">*</span></label>
                 <textarea name="actual_end_remarks" rows="2" placeholder="Jelaskan alasan perbedaan tanggal realisasi selesai dengan rencana..."
                           class="w-full bg-white border @error('actual_end_remarks') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-slate-200 focus:border-blue-500 focus:ring-blue-500 @enderror text-slate-900 placeholder-slate-400 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
-                          :required="isEndDeviated()">{{ old('actual_end_remarks') }}</textarea>
+                          :required="isEndDeviated()" :disabled="!isEndDeviated()">{{ old('actual_end_remarks') }}</textarea>
                 @error('actual_end_remarks')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
             </div>
 

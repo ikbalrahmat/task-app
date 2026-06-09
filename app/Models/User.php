@@ -43,6 +43,7 @@ class User extends Authenticatable
     public function isMember(): bool   { return $this->role === self::ROLE_KETUA; }
     public function isViewer(): bool   { return $this->role === self::ROLE_ANGGOTA; }
     public function isAdminOrManager(): bool { return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_PENGENDALI]); }
+    public function hasCrudAccess(): bool { return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_PENGENDALI, self::ROLE_KETUA]); }
 
     // Relations
     public function tasks()

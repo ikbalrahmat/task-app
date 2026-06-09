@@ -41,13 +41,21 @@ class TaskDeadlineNotification extends Notification
 
     public function toArray(object $notifiable): array
     {
+        $days = $this->task->days_until_due;
+        $message = match(true) {
+            $days < 0  => "Tugas \"{$this->task->name}\" terlambat (OVERDUE) " . abs($days) . " hari.",
+            $days == 0 => "Tugas \"{$this->task->name}\" jatuh tempo HARI INI.",
+            default    => "Tugas \"{$this->task->name}\" mendekati deadline dalam {$days} hari.",
+        };
+
         return [
             'task_id'    => $this->task->id,
             'task_name'  => $this->task->name,
             'project'    => $this->task->project->name ?? '-',
             'due_date'   => $this->task->due_date?->format('d M Y'),
-            'days_until' => $this->task->days_until_due,
+            'days_until' => $days,
             'type'       => $this->type,
+            'message'    => $message,
         ];
     }
 }

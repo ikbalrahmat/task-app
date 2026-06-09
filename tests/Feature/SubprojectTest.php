@@ -475,5 +475,60 @@ class SubprojectTest extends TestCase
             'actual_start_remarks' => 'Delay due to weather',
         ]);
     }
+
+    public function test_anggota_tim_can_only_see_projects_tasks_they_are_assigned_as_pic(): void
+    {
+        // Create an Anggota Tim
+        $anggota = User::factory()->create([
+            'role' => User::ROLE_ANGGOTA,
+        ]);
+
+        // Create another project that they are NOT involved in
+        $otherProject = Project::create([
+            'name' => 'Project Uninvolved',
+            'created_by' => $this->admin->id,
+            'year' => 2026,
+        ]);
+
+        // Create a task in the original project and assign $anggota as PIC
+        $task = \App\Models\Task::create([
+            'project_id' => $this->project->id,
+            'name' => 'Assigned Task',
+            'status' => 'Belum Mulai',
+            'progress' => 0,
+            'created_by' => $this->admin->id,
+        ]);
+        $task->pics()->sync([$anggota->id]);
+
+        // When listing projects, they should only see the one they are assigned to
+        $response = $this->actingAs($anggota)->get(route('projects.index'));
+        $response->assertSee($this->project->name);
+        $response->assertDontSee($otherProject->name);
+
+        // When listing tasks, they should only see their assigned task
+        $response = $this->actingAs($anggota)->get(route('tasks.index'));
+        $response->assertSee('Assigned Task');
+    }
+
+    public function test_anggota_tim_cannot_crud_projects_subprojects(): void
+    {
+        $anggota = User::factory()->create([
+            'role' => User::ROLE_ANGGOTA,
+        ]);
+
+        // Can't create project
+        $response = $this->actingAs($anggota)->post(route('projects.store'), [
+            'name' => 'New Project Attempt',
+            'year' => 2026,
+        ]);
+        $response->assertStatus(403);
+
+        // Can't create subproject
+        $response = $this->actingAs($anggota)->post(route('subprojects.store'), [
+            'project_id' => $this->project->id,
+            'name' => 'New Subproject Attempt',
+        ]);
+        $response->assertStatus(403);
+    }
 }
 
