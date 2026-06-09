@@ -40,8 +40,18 @@
                 <div class="flex justify-between"><span class="text-slate-500">Rencana Mulai</span><span class="text-slate-800 font-medium">{{ $project->start_date?->format('d M Y') ?? '-' }}</span></div>
                 <div class="flex justify-between"><span class="text-slate-500">Rencana Selesai</span><span class="text-slate-800 font-medium">{{ $project->end_date?->format('d M Y') ?? '-' }}</span></div>
                 
-                <div class="flex justify-between border-t border-slate-100 pt-3 mt-1"><span class="text-slate-500">Realisasi Mulai</span><span class="text-blue-600 font-semibold">{{ $project->actual_start_date?->format('d M Y') ?? '-' }}</span></div>
-                <div class="flex justify-between items-start"><span class="text-slate-500 mt-0.5">Realisasi Selesai</span>
+                <div class="flex justify-between border-t border-slate-100 pt-3 mt-1">
+                    <span class="text-slate-500">Realisasi Mulai</span>
+                    <span class="text-blue-600 font-semibold">{{ $project->actual_start_date?->format('d M Y') ?? '-' }}</span>
+                </div>
+                @if($project->actual_start_remarks)
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800 mt-1">
+                        <span class="font-semibold">Alasan deviasi:</span> {{ $project->actual_start_remarks }}
+                    </div>
+                @endif
+
+                <div class="flex justify-between items-start pt-2">
+                    <span class="text-slate-500 mt-0.5">Realisasi Selesai</span>
                     <div class="text-right">
                         <span class="text-blue-600 font-semibold block">{{ $project->actual_end_date?->format('d M Y') ?? '-' }}</span>
                         @if($project->delay_days > 0)
@@ -53,6 +63,11 @@
                         @endif
                     </div>
                 </div>
+                @if($project->actual_end_remarks)
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800 mt-1">
+                        <span class="font-semibold">Alasan deviasi:</span> {{ $project->actual_end_remarks }}
+                    </div>
+                @endif
                 
                 <div class="flex justify-between border-t border-slate-100 pt-3 mt-1"><span class="text-slate-500">Dibuat oleh</span><span class="text-slate-800 font-medium">{{ $project->creator->name ?? '-' }}</span></div>
             </div>

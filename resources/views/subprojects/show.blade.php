@@ -44,10 +44,25 @@
                 <div class="flex justify-between"><span class="text-slate-500">Rencana Mulai</span><span class="text-slate-800 font-medium">{{ $subproject->start_date?->format('d M Y') ?? '-' }}</span></div>
                 <div class="flex justify-between"><span class="text-slate-500">Rencana Selesai</span><span class="text-slate-800 font-medium">{{ $subproject->end_date?->format('d M Y') ?? '-' }}</span></div>
                 
-                <div class="flex justify-between border-t border-slate-100 pt-3 mt-1"><span class="text-slate-500">Realisasi Mulai</span><span class="text-blue-600 font-semibold">{{ $subproject->actual_start_date?->format('d M Y') ?? '-' }}</span></div>
-                <div class="flex justify-between items-start"><span class="text-slate-500 mt-0.5">Realisasi Selesai</span>
+                <div class="flex justify-between border-t border-slate-100 pt-3 mt-1">
+                    <span class="text-slate-500">Realisasi Mulai</span>
+                    <span class="text-blue-600 font-semibold">{{ $subproject->actual_start_date?->format('d M Y') ?? '-' }}</span>
+                </div>
+                @if($subproject->actual_start_remarks)
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800 mt-1">
+                        <span class="font-semibold">Alasan deviasi:</span> {{ $subproject->actual_start_remarks }}
+                    </div>
+                @endif
+
+                <div class="flex justify-between items-start pt-2">
+                    <span class="text-slate-500 mt-0.5">Realisasi Selesai</span>
                     <span class="text-blue-600 font-semibold text-right">{{ $subproject->actual_end_date?->format('d M Y') ?? '-' }}</span>
                 </div>
+                @if($subproject->actual_end_remarks)
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800 mt-1">
+                        <span class="font-semibold">Alasan deviasi:</span> {{ $subproject->actual_end_remarks }}
+                    </div>
+                @endif
                 
                 <div class="flex justify-between border-t border-slate-100 pt-3 mt-1"><span class="text-slate-500">Dibuat oleh</span><span class="text-slate-800 font-medium">{{ $subproject->creator->name ?? '-' }}</span></div>
             </div>

@@ -18,6 +18,8 @@ class Project extends Model
         'end_date',
         'actual_start_date',
         'actual_end_date',
+        'actual_start_remarks',
+        'actual_end_remarks',
         'description',
         'created_by',
     ];

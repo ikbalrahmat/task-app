@@ -18,6 +18,8 @@ class Task extends Model
         'due_date',
         'actual_start_date',
         'actual_end_date',
+        'actual_start_remarks',
+        'actual_end_remarks',
         'progress',
         'status',
         'description',

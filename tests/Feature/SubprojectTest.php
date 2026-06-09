@@ -350,4 +350,130 @@ class SubprojectTest extends TestCase
         $this->assertEquals('Selesai', $subproject->fresh()->status);
         $this->assertEquals('Selesai', $project->fresh()->status);
     }
+
+    public function test_subproject_requires_remarks_if_actual_dates_differ_from_planned_dates(): void
+    {
+        // 1. Deviating start date without remarks -> validation fails
+        $response = $this->actingAs($this->admin)
+            ->post(route('subprojects.store'), [
+                'project_id' => $this->project->id,
+                'name' => 'Subproject Dev Start',
+                'start_date' => '2026-06-10',
+                'end_date' => '2026-06-20',
+                'actual_start_date' => '2026-06-11',
+                'actual_start_remarks' => '', // Empty!
+            ]);
+        $response->assertSessionHasErrors(['actual_start_remarks']);
+
+        // 2. Deviating start date with remarks -> validation succeeds
+        $response = $this->actingAs($this->admin)
+            ->post(route('subprojects.store'), [
+                'project_id' => $this->project->id,
+                'name' => 'Subproject Dev Start OK',
+                'start_date' => '2026-06-10',
+                'end_date' => '2026-06-20',
+                'actual_start_date' => '2026-06-11',
+                'actual_start_remarks' => 'Delay due to weather',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('subprojects', [
+            'name' => 'Subproject Dev Start OK',
+            'actual_start_remarks' => 'Delay due to weather',
+        ]);
+
+        // 3. Deviating end date without remarks -> validation fails
+        $response = $this->actingAs($this->admin)
+            ->post(route('subprojects.store'), [
+                'project_id' => $this->project->id,
+                'name' => 'Subproject Dev End',
+                'start_date' => '2026-06-10',
+                'end_date' => '2026-06-20',
+                'actual_end_date' => '2026-06-21',
+                'actual_end_remarks' => '', // Empty!
+            ]);
+        $response->assertSessionHasErrors(['actual_end_remarks']);
+
+        // 4. Deviating end date with remarks -> validation succeeds
+        $response = $this->actingAs($this->admin)
+            ->post(route('subprojects.store'), [
+                'project_id' => $this->project->id,
+                'name' => 'Subproject Dev End OK',
+                'start_date' => '2026-06-10',
+                'end_date' => '2026-06-20',
+                'actual_end_date' => '2026-06-21',
+                'actual_end_remarks' => 'Additional testing requested',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('subprojects', [
+            'name' => 'Subproject Dev End OK',
+            'actual_end_remarks' => 'Additional testing requested',
+        ]);
+    }
+
+    public function test_project_requires_remarks_if_actual_dates_differ_from_planned_dates(): void
+    {
+        // 1. Deviating start date without remarks -> validation fails
+        $response = $this->actingAs($this->admin)
+            ->post(route('projects.store'), [
+                'name' => 'Project Dev Start',
+                'year' => 2026,
+                'start_date' => '2026-06-10',
+                'end_date' => '2026-06-20',
+                'actual_start_date' => '2026-06-11',
+                'actual_start_remarks' => '', // Empty!
+            ]);
+        $response->assertSessionHasErrors(['actual_start_remarks']);
+
+        // 2. Deviating start date with remarks -> validation succeeds
+        $response = $this->actingAs($this->admin)
+            ->post(route('projects.store'), [
+                'name' => 'Project Dev Start OK',
+                'year' => 2026,
+                'start_date' => '2026-06-10',
+                'end_date' => '2026-06-20',
+                'actual_start_date' => '2026-06-11',
+                'actual_start_remarks' => 'Delay due to weather',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('projects', [
+            'name' => 'Project Dev Start OK',
+            'actual_start_remarks' => 'Delay due to weather',
+        ]);
+    }
+
+    public function test_task_requires_remarks_if_actual_dates_differ_from_planned_dates(): void
+    {
+        // 1. Deviating start date without remarks -> validation fails
+        $response = $this->actingAs($this->admin)
+            ->post(route('tasks.store'), [
+                'project_id' => $this->project->id,
+                'name' => 'Task Dev Start',
+                'start_date' => '2026-06-10',
+                'due_date' => '2026-06-20',
+                'actual_start_date' => '2026-06-11',
+                'actual_start_remarks' => '', // Empty!
+                'progress' => 0,
+                'status' => 'Belum Mulai',
+            ]);
+        $response->assertSessionHasErrors(['actual_start_remarks']);
+
+        // 2. Deviating start date with remarks -> validation succeeds
+        $response = $this->actingAs($this->admin)
+            ->post(route('tasks.store'), [
+                'project_id' => $this->project->id,
+                'name' => 'Task Dev Start OK',
+                'start_date' => '2026-06-10',
+                'due_date' => '2026-06-20',
+                'actual_start_date' => '2026-06-11',
+                'actual_start_remarks' => 'Delay due to weather',
+                'progress' => 0,
+                'status' => 'Belum Mulai',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('tasks', [
+            'name' => 'Task Dev Start OK',
+            'actual_start_remarks' => 'Delay due to weather',
+        ]);
+    }
 }
+

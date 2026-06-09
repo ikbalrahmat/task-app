@@ -65,8 +65,18 @@
                     </span>
                 </div>
                 
-                <div class="flex justify-between border-t border-slate-100 pt-3 mt-1"><span class="text-slate-500">Realisasi Mulai</span><span class="text-blue-600 font-semibold">{{ $task->actual_start_date?->format('d M Y') ?? '-' }}</span></div>
-                <div class="flex justify-between items-start"><span class="text-slate-500 mt-0.5">Realisasi Selesai</span>
+                <div class="flex justify-between border-t border-slate-100 pt-3 mt-1">
+                    <span class="text-slate-500">Realisasi Mulai</span>
+                    <span class="text-blue-600 font-semibold">{{ $task->actual_start_date?->format('d M Y') ?? '-' }}</span>
+                </div>
+                @if($task->actual_start_remarks)
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800 mt-1">
+                        <span class="font-semibold">Alasan deviasi:</span> {{ $task->actual_start_remarks }}
+                    </div>
+                @endif
+
+                <div class="flex justify-between items-start pt-2">
+                    <span class="text-slate-500 mt-0.5">Realisasi Selesai</span>
                     <div class="text-right">
                         <span class="text-blue-600 font-semibold block">{{ $task->actual_end_date?->format('d M Y') ?? '-' }}</span>
                         @if($task->delay_days > 0)
@@ -78,6 +88,11 @@
                         @endif
                     </div>
                 </div>
+                @if($task->actual_end_remarks)
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-800 mt-1">
+                        <span class="font-semibold">Alasan deviasi:</span> {{ $task->actual_end_remarks }}
+                    </div>
+                @endif
                 <div class="flex justify-between items-center"><span class="text-slate-500">Status</span>
                     @php
                         $ts = match($task->status) {

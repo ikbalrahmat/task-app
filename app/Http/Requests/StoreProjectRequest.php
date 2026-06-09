@@ -17,6 +17,20 @@ class StoreProjectRequest extends FormRequest
             'end_date'          => 'nullable|date|after_or_equal:start_date',
             'actual_start_date' => 'nullable|date',
             'actual_end_date'   => 'nullable|date|after_or_equal:actual_start_date',
+            'actual_start_remarks' => [
+                \Illuminate\Validation\Rule::requiredIf(function () {
+                    return $this->filled('actual_start_date') && $this->input('actual_start_date') !== $this->input('start_date');
+                }),
+                'nullable',
+                'string',
+            ],
+            'actual_end_remarks' => [
+                \Illuminate\Validation\Rule::requiredIf(function () {
+                    return $this->filled('actual_end_date') && $this->input('actual_end_date') !== $this->input('end_date');
+                }),
+                'nullable',
+                'string',
+            ],
             'description'       => 'nullable|string',
         ];
     }
@@ -27,6 +41,8 @@ class StoreProjectRequest extends FormRequest
             'name.required'       => 'Nama project wajib diisi.',
             'year.required'       => 'Tahun wajib diisi.',
             'end_date.after_or_equal' => 'Tanggal selesai harus setelah tanggal mulai.',
+            'actual_start_remarks.required' => 'Keterangan Realisasi Mulai wajib diisi jika tanggal realisasi berbeda dengan rencana.',
+            'actual_end_remarks.required' => 'Keterangan Realisasi Selesai wajib diisi jika tanggal realisasi berbeda dengan rencana.',
         ];
     }
 }
