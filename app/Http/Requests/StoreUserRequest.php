@@ -13,7 +13,16 @@ class StoreUserRequest extends FormRequest
         return [
             'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email',
-            'password'   => 'required|string|min:8|confirmed',
+            'password'   => [
+                'required',
+                'string',
+                'confirmed',
+                \Illuminate\Validation\Rules\Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()
+            ],
             'role'       => 'required|in:Admin,Pengendali Teknis,Ketua Tim,Anggota Tim',
             'department' => 'nullable|string|max:100',
         ];

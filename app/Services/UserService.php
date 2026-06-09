@@ -27,6 +27,7 @@ class UserService
     public function create(array $data)
     {
         $data['password'] = Hash::make($data['password']);
+        $data['password_changed_at'] = null; // force change on first login
         return $this->repo->create($data);
     }
 
@@ -34,6 +35,7 @@ class UserService
     {
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
+            $data['password_changed_at'] = null; // force change on reset
         } else {
             unset($data['password']);
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow — @yield('title', 'Login')</title>
+    <title>Sistem Informasi — @yield('title', 'Login')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -438,26 +438,22 @@
         {{-- Sidebar --}}
         <div class="auth-sidebar">
             <div class="sidebar-content">
-                <div class="logo-icon">⚡</div>
-                <h1>TaskFlow</h1>
-                <p>Kelola project dan tim Anda dengan lebih efisien. Tingkatkan produktivitas dan kolaborasi.</p>
+                <div class="logo-icon">🔒</div>
+                <h1>Sistem Informasi</h1>
+                <p>Akses masuk terpusat untuk portal layanan terintegrasi.</p>
 
                 <div class="feature-list">
                     <div class="feature-item">
                         <span>✓</span>
-                        <div>Manajemen project real-time</div>
+                        <div>Keamanan Akses Terjamin</div>
                     </div>
                     <div class="feature-item">
                         <span>✓</span>
-                        <div>Kolaborasi tim yang seamless</div>
+                        <div>Pemantauan Aktivitas Audit</div>
                     </div>
                     <div class="feature-item">
                         <span>✓</span>
-                        <div>Tracking progress otomatis</div>
-                    </div>
-                    <div class="feature-item">
-                        <span>✓</span>
-                        <div>Laporan komprehensif</div>
+                        <div>Otentikasi & Otorisasi Ketat</div>
                     </div>
                 </div>
             </div>

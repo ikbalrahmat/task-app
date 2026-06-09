@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\TaskComment;
 use Illuminate\Http\Request;
+use App\Services\ActivityLogger;
 
 class TaskCommentController extends Controller
 {
@@ -17,11 +18,12 @@ class TaskCommentController extends Controller
             'comment' => 'required|string',
         ]);
 
-        TaskComment::create([
+        $newComment = TaskComment::create([
             'task_id' => $task->id,
             'user_id' => $request->user()->id,
             'comment' => $request->comment,
         ]);
+        ActivityLogger::log('comment.created', "Menambahkan komentar pada task '{$task->title}'");
 
         return back()->with('success', 'Komentar berhasil ditambahkan.');
     }
@@ -41,6 +43,7 @@ class TaskCommentController extends Controller
         $comment->update([
             'comment' => $request->comment,
         ]);
+        ActivityLogger::log('comment.updated', "Memperbarui komentar ID: {$comment->id} pada task '{$comment->task->title}'");
 
         return back()->with('success', 'Komentar berhasil diperbarui.');
     }
@@ -54,6 +57,7 @@ class TaskCommentController extends Controller
         }
 
         $comment->delete();
+        ActivityLogger::log('comment.deleted', "Menghapus komentar ID: {$id} pada task '{$comment->task->title}'");
 
         return back()->with('success', 'Komentar berhasil dihapus.');
     }

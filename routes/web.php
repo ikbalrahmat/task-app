@@ -50,7 +50,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::get('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 
+    Route::get('/change-password', [AuthController::class, 'showChangePassword'])->name('change-password');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password.post');
+
     Route::middleware('can:viewAny,App\Models\User')->group(function () {
+        Route::get('/admin/activity-logs', [UserController::class, 'logs'])->name('users.logs');
+        Route::post('/users/{user}/unlock', [UserController::class, 'unlock'])->name('users.unlock');
         Route::resource('users', UserController::class)->except(['show']);
     });
 });

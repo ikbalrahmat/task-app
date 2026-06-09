@@ -14,7 +14,16 @@ class UpdateUserRequest extends FormRequest
         return [
             'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email,' . $userId,
-            'password'   => 'nullable|string|min:8|confirmed',
+            'password'   => [
+                'nullable',
+                'string',
+                'confirmed',
+                \Illuminate\Validation\Rules\Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()
+            ],
             'role'       => 'required|in:Admin,Pengendali Teknis,Ketua Tim,Anggota Tim',
             'department' => 'nullable|string|max:100',
         ];

@@ -9,6 +9,7 @@ use App\Models\Subproject;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActivityLogger;
 
 class ProjectController extends Controller
 {
@@ -33,7 +34,8 @@ class ProjectController extends Controller
         $this->authorize('create', Project::class);
         $data = $request->validated();
         $data['created_by'] = $request->user()->id;
-        $this->service->create($data);
+        $project = $this->service->create($data);
+        ActivityLogger::log('project.created', 'Membuat project baru: ' . $project->name);
         return redirect()->route('projects.index')->with('success', 'Project berhasil ditambahkan.');
     }
 
@@ -55,7 +57,8 @@ class ProjectController extends Controller
     {
         $project = $this->service->find($id);
         $this->authorize('update', $project);
-        $this->service->update($id, $request->validated());
+        $updated = $this->service->update($id, $request->validated());
+        ActivityLogger::log('project.updated', 'Memperbarui project: ' . $updated->name);
         return redirect()->route('projects.index')->with('success', 'Project berhasil diperbarui.');
     }
 
@@ -63,7 +66,9 @@ class ProjectController extends Controller
     {
         $project = $this->service->find($id);
         $this->authorize('delete', $project);
+        $name = $project->name;
         $this->service->delete($id);
+        ActivityLogger::log('project.deleted', 'Menghapus project: ' . $name);
         return redirect()->route('projects.index')->with('success', 'Project berhasil dihapus.');
     }
 
@@ -71,6 +76,7 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         $this->authorize('delete', $project);
+        ActivityLogger::log('project.converted', "Mengonversi project '{$project->name}' menjadi subproject.");
 
         $request->validate([
             'target_project_id' => 'required|exists:projects,id|not_in:' . $project->id,
