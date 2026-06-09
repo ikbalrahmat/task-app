@@ -47,7 +47,7 @@ class DashboardService
 
     public function getActiveTasks(int $year, int $limit = 10)
     {
-        return Task::with(['project', 'pic'])
+        return Task::with(['project', 'pics'])
             ->whereHas('project', fn($q) => $q->where('year', $year))
             ->where('status', '!=', 'Selesai')
             ->orderBy('due_date')

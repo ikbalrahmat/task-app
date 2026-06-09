@@ -50,9 +50,15 @@ class Project extends Model
     // Accessors
     public function getProgressAttribute(): int
     {
-        $tasks = $this->tasks;
-        if ($tasks->isEmpty()) return 0;
-        return (int) round($tasks->avg('progress'));
+        $subprojects = $this->subprojects;
+        $directTasks = $this->tasks()->whereNull('subproject_id')->get();
+
+        $totalItems = $subprojects->count() + $directTasks->count();
+        if ($totalItems === 0) return 0;
+
+        $sumProgress = $subprojects->sum('progress') + $directTasks->sum('progress');
+
+        return (int) round($sumProgress / $totalItems);
     }
 
     public function getOverdueTasksCountAttribute(): int

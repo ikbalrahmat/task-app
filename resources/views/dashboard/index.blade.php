@@ -93,6 +93,23 @@
                     <span>{{ $project->tasks->where('status', 'Selesai')->count() }}/{{ $project->tasks->count() }} task selesai</span>
                     <span>{{ $project->status }}</span>
                 </div>
+                @if($project->subprojects->isNotEmpty())
+                <div class="mt-3 pl-4 border-l-2 border-slate-100 space-y-2">
+                    @foreach($project->subprojects as $sub)
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-1">
+                            <a href="{{ route('subprojects.show', $sub->id) }}" class="text-[11px] font-medium text-slate-600 hover:text-blue-600 transition-colors truncate max-w-[180px]" title="{{ $sub->name }}">
+                                📂 {{ $sub->name }}
+                            </a>
+                            <span class="text-[10px] font-bold text-slate-500">{{ $sub->progress }}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1">
+                            <div class="h-1 rounded-full bg-blue-500" style="width: {{ $sub->progress }}%"></div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
             </div>
             @empty
             <p class="text-slate-500 text-sm text-center py-4">Belum ada project di tahun {{ $year }}.</p>

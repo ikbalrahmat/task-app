@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\Subproject;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -63,5 +65,56 @@ class ProjectController extends Controller
         $this->authorize('delete', $project);
         $this->service->delete($id);
         return redirect()->route('projects.index')->with('success', 'Project berhasil dihapus.');
+    }
+
+    public function convertToSubproject(Request $request, int $id)
+    {
+        $project = Project::findOrFail($id);
+        $this->authorize('delete', $project);
+
+        $request->validate([
+            'target_project_id' => 'required|exists:projects,id|not_in:' . $project->id,
+        ], [
+            'target_project_id.required' => 'Project induk sasaran wajib dipilih.',
+            'target_project_id.exists' => 'Project induk sasaran tidak valid.',
+            'target_project_id.not_in' => 'Tidak dapat memindahkan project ke dirinya sendiri.',
+        ]);
+
+        $targetProjectId = $request->input('target_project_id');
+
+        DB::transaction(function () use ($project, $targetProjectId) {
+            // 1. Create new Subproject under the target Project
+            $subproject = Subproject::create([
+                'project_id'        => $targetProjectId,
+                'name'              => $project->name,
+                'description'       => $project->description,
+                'status'            => in_array($project->status, Subproject::STATUSES) ? $project->status : 'Berjalan',
+                'start_date'        => $project->start_date,
+                'end_date'          => $project->end_date,
+                'actual_start_date' => $project->actual_start_date,
+                'actual_end_date'   => $project->actual_end_date,
+                'created_by'        => auth()->id(),
+            ]);
+
+            // 2. Reassign all direct tasks of the source project (where subproject_id is null)
+            $project->tasks()->whereNull('subproject_id')->update([
+                'project_id'    => $targetProjectId,
+                'subproject_id' => $subproject->id,
+            ]);
+
+            // 3. Reassign all subprojects of the source project
+            foreach ($project->subprojects as $sp) {
+                // Update project_id for all tasks under this child subproject
+                $sp->tasks()->update(['project_id' => $targetProjectId]);
+                // Update parent project of the subproject
+                $sp->update(['project_id' => $targetProjectId]);
+            }
+
+            // 4. Force delete the source project
+            $project->forceDelete();
+        });
+
+        return redirect()->route('projects.show', $targetProjectId)
+            ->with('success', 'Project berhasil diubah menjadi Sub-Project beserta seluruh tugas di dalamnya!');
     }
 }

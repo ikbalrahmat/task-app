@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('projects', ProjectController::class);
+    Route::post('/projects/{project}/convert-to-subproject', [ProjectController::class, 'convertToSubproject'])->name('projects.convert');
     Route::resource('subprojects', SubprojectController::class);
     
     Route::resource('tasks', TaskController::class);

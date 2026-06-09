@@ -79,4 +79,34 @@
             </div>
         </form>
     </div>
-</div>@endsection
+
+    {{-- Card: Convert to Sub-Project --}}
+    @if(auth()->user()->isAdminOrManager())
+    <div class="mt-8 bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+        <h3 class="text-base font-bold text-red-700 mb-2">⚠️ Ubah Menjadi Sub-Project</h3>
+        <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+            Ingin mengubah Project ini menjadi Sub-Project dari Project lain? Seluruh tugas (Tasks) dan sub-project di dalam Project ini akan secara otomatis dipindahkan ke bawah Project induk yang baru. Setelah pemindahan selesai, Project ini akan dihapus secara otomatis.
+        </p>
+        
+        <form method="POST" action="{{ route('projects.convert', $project->id) }}" class="space-y-4" onsubmit="return confirm('Apakah Anda yakin ingin mengubah project ini menjadi sub-project? Project ini akan dihapus setelah seluruh tugasnya dipindahkan.')">
+            @csrf
+            
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Pilih Project Induk Baru</label>
+                <select name="target_project_id" required
+                        class="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                    <option value="">-- Pilih Project Sasaran --</option>
+                    @foreach(\App\Models\Project::where('id', '!=', $project->id)->orderBy('name')->get() as $p)
+                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold px-5 py-2.5 rounded-xl text-sm transition-all cursor-pointer">
+                Konversi & Pindahkan
+            </button>
+        </form>
+    </div>
+    @endif
+</div>
+@endsection
