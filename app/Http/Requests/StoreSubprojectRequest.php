@@ -14,7 +14,6 @@ class StoreSubprojectRequest extends FormRequest
             'project_id'        => 'required|exists:projects,id',
             'name'              => 'required|string|max:255',
             'description'       => 'nullable|string',
-            'status'            => 'required|in:Perencanaan,Berjalan,Selesai,Ditunda',
             'start_date'        => 'nullable|date',
             'end_date'          => 'nullable|date|after_or_equal:start_date',
             'actual_start_date' => 'nullable|date',
@@ -26,7 +25,6 @@ class StoreSubprojectRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama sub-project wajib diisi.',
-            'status.required' => 'Status wajib dipilih.',
         ];
     }
 }

@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
         $p3 = Project::create([
             'name'        => 'Project Q3 - IT Infra',
             'year'        => 2025,
-            'status'      => 'Perencanaan',
+            'status'      => 'Belum Mulai',
             'start_date'  => '2025-07-01',
             'end_date'    => '2025-09-30',
             'description' => 'Upgrade infrastruktur IT perusahaan',

@@ -22,12 +22,13 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <h2 class="font-bold text-slate-900 mb-4">Informasi Sub-Project</h2>
             <div class="space-y-3 text-sm">
-                <div class="flex justify-between items-center"><span class="text-slate-500">Status</span>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500">Status</span>
                     @php
                         $sc = match($subproject->status) {
                             'Berjalan'   => 'bg-blue-50 text-blue-600 border-blue-100',
                             'Selesai'    => 'bg-green-50 text-green-600 border-green-100',
-                            'Perencanaan'=> 'bg-slate-50 text-slate-500 border-slate-200',
+                            'Belum Mulai', 'Perencanaan'=> 'bg-slate-50 text-slate-500 border-slate-200',
                             'Ditunda'    => 'bg-red-50 text-red-600 border-red-100',
                             default      => 'bg-slate-50 text-slate-500 border-slate-200',
                         };

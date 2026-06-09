@@ -44,13 +44,13 @@ class SubprojectTest extends TestCase
                 'project_id' => $this->project->id,
                 'name' => 'Subproject A',
                 'description' => 'Subproject Description',
-                'status' => 'Perencanaan',
             ]);
 
         $response->assertRedirect(route('projects.show', $this->project->id));
         $this->assertDatabaseHas('subprojects', [
             'name' => 'Subproject A',
             'project_id' => $this->project->id,
+            'status' => 'Belum Mulai',
         ]);
     }
 
@@ -61,7 +61,6 @@ class SubprojectTest extends TestCase
                 'project_id' => $this->project->id,
                 'name' => 'Subproject A',
                 'description' => 'Subproject Description',
-                'status' => 'Perencanaan',
             ]);
 
         $response->assertStatus(403);
@@ -83,7 +82,6 @@ class SubprojectTest extends TestCase
                 'project_id' => $this->project->id,
                 'name' => 'New Name',
                 'description' => 'Updated Description',
-                'status' => 'Berjalan',
             ]);
 
         $response->assertRedirect(route('projects.show', $this->project->id));
@@ -155,7 +153,6 @@ class SubprojectTest extends TestCase
             ->put(route('subprojects.update', $subproject->id), [
                 'project_id' => $newProject->id,
                 'name' => 'Moving Subproject',
-                'status' => 'Berjalan',
             ]);
 
         $response->assertRedirect(route('projects.show', $newProject->id));
@@ -187,7 +184,7 @@ class SubprojectTest extends TestCase
         $sourceProject = Project::create([
             'name' => 'Source Project',
             'description' => 'Source Description',
-            'status' => 'Perencanaan',
+            'status' => 'Belum Mulai',
             'created_by' => $this->admin->id,
             'year' => 2026,
         ]);
@@ -275,5 +272,82 @@ class SubprojectTest extends TestCase
         // Project should now have 1 subproject (75% progress) and 1 direct task (100% progress)
         // Average: (75 + 100) / 2 = 87.5% -> round to 88%
         $this->assertEquals(88, $this->project->fresh()->progress);
+    }
+
+    public function test_project_and_subproject_status_is_recalculated_automatically(): void
+    {
+        // 1. Initial State (No tasks)
+        $project = Project::create([
+            'name' => 'Auto Status Project',
+            'year' => 2026,
+            'created_by' => $this->admin->id,
+        ]);
+        $this->assertEquals('Belum Mulai', $project->status);
+
+        $subproject = Subproject::create([
+            'project_id' => $project->id,
+            'name' => 'Auto Status Subproject',
+            'created_by' => $this->admin->id,
+        ]);
+        $this->assertEquals('Belum Mulai', $subproject->status);
+
+        // 2. Add 0% progress task -> Status should remain 'Belum Mulai'
+        $task1 = \App\Models\Task::create([
+            'project_id' => $project->id,
+            'subproject_id' => $subproject->id,
+            'name' => 'Task 1',
+            'status' => 'Belum Mulai',
+            'progress' => 0,
+            'created_by' => $this->admin->id,
+        ]);
+
+        $this->assertEquals('Belum Mulai', $subproject->fresh()->status);
+        $this->assertEquals('Belum Mulai', $project->fresh()->status);
+
+        // 3. Update Task 1 to 50% -> Status should change to 'Berjalan'
+        $task1->update([
+            'status' => 'Berjalan',
+            'progress' => 50,
+        ]);
+
+        $this->assertEquals('Berjalan', $subproject->fresh()->status);
+        $this->assertEquals('Berjalan', $project->fresh()->status);
+
+        // 4. Update Task 1 to 100% -> Status should change to 'Selesai'
+        $task1->update([
+            'status' => 'Selesai',
+            'progress' => 100,
+        ]);
+
+        $this->assertEquals('Selesai', $subproject->fresh()->status);
+        $this->assertEquals('Selesai', $project->fresh()->status);
+
+        // 5. Add second task at 0% -> Status should go back to 'Berjalan'
+        $task2 = \App\Models\Task::create([
+            'project_id' => $project->id,
+            'subproject_id' => $subproject->id,
+            'name' => 'Task 2',
+            'status' => 'Belum Mulai',
+            'progress' => 0,
+            'created_by' => $this->admin->id,
+        ]);
+
+        $this->assertEquals('Berjalan', $subproject->fresh()->status);
+        $this->assertEquals('Berjalan', $project->fresh()->status);
+
+        // 6. Complete task 2 -> Status should be 'Selesai' again
+        $task2->update([
+            'status' => 'Selesai',
+            'progress' => 100,
+        ]);
+
+        $this->assertEquals('Selesai', $subproject->fresh()->status);
+        $this->assertEquals('Selesai', $project->fresh()->status);
+
+        // 7. Delete Task 2 -> Status should remain 'Selesai' since task 1 is still completed
+        $task2->delete();
+
+        $this->assertEquals('Selesai', $subproject->fresh()->status);
+        $this->assertEquals('Selesai', $project->fresh()->status);
     }
 }

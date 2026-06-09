@@ -13,7 +13,6 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name'        => 'required|string|max:255',
             'year'        => 'required|integer|min:2020|max:2099',
-            'status'      => 'required|in:Perencanaan,Berjalan,Selesai,Ditunda',
             'start_date'        => 'nullable|date',
             'end_date'          => 'nullable|date|after_or_equal:start_date',
             'actual_start_date' => 'nullable|date',
@@ -27,7 +26,6 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name.required'           => 'Nama project wajib diisi.',
             'year.required'           => 'Tahun wajib diisi.',
-            'status.required'         => 'Status wajib dipilih.',
             'end_date.after_or_equal' => 'Tanggal selesai harus setelah tanggal mulai.',
         ];
     }

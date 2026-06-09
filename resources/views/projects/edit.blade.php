@@ -17,22 +17,11 @@
                 @error('name')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
             </div>
 
-            <div class="grid grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Tahun <span class="text-red-600">*</span></label>
-                    <input type="number" name="year" value="{{ old('year', $project->year) }}" min="2020" max="2099" required
-                           class="w-full bg-white border @error('year') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-slate-200 focus:border-blue-500 focus:ring-blue-500 @enderror text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors">
-                    @error('year')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Status <span class="text-red-600">*</span></label>
-                    <select name="status" required
-                            class="w-full bg-white border border-slate-200 text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
-                        @foreach(\App\Models\Project::STATUSES as $s)
-                            <option value="{{ $s }}" {{ old('status', $project->status) == $s ? 'selected' : '' }}>{{ $s }}</option>
-                        @endforeach
-                    </select>
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Tahun <span class="text-red-600">*</span></label>
+                <input type="number" name="year" value="{{ old('year', $project->year) }}" min="2020" max="2099" required
+                       class="w-full bg-white border @error('year') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-slate-200 focus:border-blue-500 focus:ring-blue-500 @enderror text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors">
+                @error('year')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
             </div>
 
             <div class="grid grid-cols-2 gap-5">

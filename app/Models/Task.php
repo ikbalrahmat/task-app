@@ -92,4 +92,40 @@ class Task extends Model
         if (!$this->due_date || !$this->actual_end_date) return 0;
         return (int) $this->due_date->startOfDay()->diffInDays($this->actual_end_date->startOfDay(), false);
     }
+
+    protected static function booted()
+    {
+        static::saved(function ($task) {
+            $task->recalculateParentStatuses();
+        });
+
+        static::deleted(function ($task) {
+            $task->recalculateParentStatuses();
+        });
+    }
+
+    public function recalculateParentStatuses()
+    {
+        if ($this->subproject) {
+            $this->subproject->refresh()->recalculateStatus();
+        }
+        if ($this->project) {
+            $this->project->refresh()->recalculateStatus();
+        }
+
+        if ($this->isDirty('subproject_id')) {
+            $originalSubprojectId = $this->getOriginal('subproject_id');
+            if ($originalSubprojectId) {
+                $originalSubproject = \App\Models\Subproject::find($originalSubprojectId);
+                if ($originalSubproject) $originalSubproject->refresh()->recalculateStatus();
+            }
+        }
+        if ($this->isDirty('project_id')) {
+            $originalProjectId = $this->getOriginal('project_id');
+            if ($originalProjectId) {
+                $originalProject = \App\Models\Project::find($originalProjectId);
+                if ($originalProject) $originalProject->refresh()->recalculateStatus();
+            }
+        }
+    }
 }

@@ -31,17 +31,6 @@
                 @error('name')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Status <span class="text-red-600">*</span></label>
-                <select name="status" required
-                        class="w-full bg-white border @error('status') border-red-500 focus:border-red-500 focus:ring-red-500 @else border-slate-200 focus:border-blue-500 focus:ring-blue-500 @enderror text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors">
-                    @foreach(\App\Models\Subproject::STATUSES as $s)
-                        <option value="{{ $s }}" {{ old('status', 'Perencanaan') == $s ? 'selected' : '' }}>{{ $s }}</option>
-                    @endforeach
-                </select>
-                @error('status')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
-            </div>
-
             <div class="grid grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Rencana Mulai</label>

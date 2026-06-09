@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->year('year');
-            $table->enum('status', ['Perencanaan', 'Berjalan', 'Selesai', 'Ditunda'])->default('Perencanaan');
+            $table->string('status')->default('Belum Mulai');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->text('description')->nullable();

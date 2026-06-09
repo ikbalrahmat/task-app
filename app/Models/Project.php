@@ -22,6 +22,10 @@ class Project extends Model
         'created_by',
     ];
 
+    protected $attributes = [
+        'status' => 'Belum Mulai',
+    ];
+
     protected $casts = [
         'start_date'        => 'date',
         'end_date'          => 'date',
@@ -29,7 +33,7 @@ class Project extends Model
         'actual_end_date'   => 'date',
     ];
 
-    const STATUSES = ['Perencanaan', 'Berjalan', 'Selesai', 'Ditunda'];
+    const STATUSES = ['Belum Mulai', 'Berjalan', 'Selesai'];
 
     // Relations
     public function tasks()
@@ -71,5 +75,50 @@ class Project extends Model
     {
         if (!$this->end_date || !$this->actual_end_date) return 0;
         return (int) $this->end_date->startOfDay()->diffInDays($this->actual_end_date->startOfDay(), false);
+    }
+
+    public function recalculateStatus(): void
+    {
+        $subprojects = $this->subprojects;
+        $directTasks = $this->tasks()->whereNull('subproject_id')->get();
+
+        $totalItems = $subprojects->count() + $directTasks->count();
+
+        if ($totalItems === 0) {
+            $status = 'Belum Mulai';
+        } else {
+            $allSelesai = true;
+            $allBelumMulai = true;
+
+            foreach ($subprojects as $sp) {
+                if ($sp->status !== 'Selesai') {
+                    $allSelesai = false;
+                }
+                if ($sp->status !== 'Belum Mulai') {
+                    $allBelumMulai = false;
+                }
+            }
+
+            foreach ($directTasks as $t) {
+                if ($t->status !== 'Selesai' && $t->progress !== 100) {
+                    $allSelesai = false;
+                }
+                if ($t->status !== 'Belum Mulai' || $t->progress > 0) {
+                    $allBelumMulai = false;
+                }
+            }
+
+            if ($allSelesai) {
+                $status = 'Selesai';
+            } elseif ($allBelumMulai) {
+                $status = 'Belum Mulai';
+            } else {
+                $status = 'Berjalan';
+            }
+        }
+
+        if ($this->status !== $status) {
+            $this->update(['status' => $status]);
+        }
     }
 }

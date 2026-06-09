@@ -76,7 +76,7 @@
                         $sc = match($project->status) {
                             'Berjalan'   => 'bg-blue-50 text-blue-600 border-blue-100',
                             'Selesai'    => 'bg-green-50 text-green-600 border-green-100',
-                            'Perencanaan'=> 'bg-slate-50 text-slate-500 border-slate-200',
+                            'Belum Mulai', 'Perencanaan'=> 'bg-slate-50 text-slate-500 border-slate-200',
                             'Ditunda'    => 'bg-red-50 text-red-600 border-red-100',
                             default => 'bg-slate-50 text-slate-500 border-slate-200',
                         };

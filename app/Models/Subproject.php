@@ -21,6 +21,10 @@ class Subproject extends Model
         'created_by',
     ];
 
+    protected $attributes = [
+        'status' => 'Belum Mulai',
+    ];
+
     protected $casts = [
         'start_date'        => 'date',
         'end_date'          => 'date',
@@ -28,7 +32,7 @@ class Subproject extends Model
         'actual_end_date'   => 'date',
     ];
 
-    const STATUSES = ['Perencanaan', 'Berjalan', 'Selesai', 'Ditunda'];
+    const STATUSES = ['Belum Mulai', 'Berjalan', 'Selesai'];
 
     // Relations
     public function project()
@@ -51,5 +55,23 @@ class Subproject extends Model
     {
         if ($this->tasks->isEmpty()) return 0;
         return (int) round($this->tasks->avg('progress'));
+    }
+
+    public function recalculateStatus(): void
+    {
+        $tasks = $this->tasks;
+        if ($tasks->isEmpty()) {
+            $status = 'Belum Mulai';
+        } elseif ($tasks->every(fn($t) => $t->status === 'Selesai' || $t->progress === 100)) {
+            $status = 'Selesai';
+        } elseif ($tasks->every(fn($t) => $t->status === 'Belum Mulai' && $t->progress === 0)) {
+            $status = 'Belum Mulai';
+        } else {
+            $status = 'Berjalan';
+        }
+
+        if ($this->status !== $status) {
+            $this->update(['status' => $status]);
+        }
     }
 }

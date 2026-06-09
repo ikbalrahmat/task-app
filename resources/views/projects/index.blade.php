@@ -51,7 +51,7 @@
                     <th class="px-6 py-4 text-left font-semibold">Status</th>
                     <th class="px-6 py-4 text-left font-semibold">Periode</th>
                     <th class="px-6 py-4 text-left font-semibold">Progress</th>
-                    <th class="px-6 py-4 text-left font-semibold">Task</th>
+                    <th class="px-6 py-4 text-left font-semibold">Sub-Project</th>
                     <th class="px-6 py-4 text-center font-semibold">Aksi</th>
                 </tr>
             </thead>
@@ -72,8 +72,7 @@
                             $sc = match($project->status) {
                                 'Berjalan'   => 'bg-blue-50 text-blue-600 border-blue-100',
                                 'Selesai'    => 'bg-green-50 text-green-600 border-green-100',
-                                'Perencanaan'=> 'bg-slate-50 text-slate-500 border-slate-200',
-                                'Ditunda'    => 'bg-red-50 text-red-600 border-red-100',
+                                'Belum Mulai', 'Perencanaan' => 'bg-slate-50 text-slate-500 border-slate-200',
                                 default      => 'bg-slate-50 text-slate-500 border-slate-200',
                             };
                         @endphp
@@ -95,10 +94,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <span class="text-xs text-slate-600">{{ $project->tasks->count() }} task</span>
-                        @if($project->overdue_tasks_count > 0)
-                            <span class="ml-1 text-xs text-red-600 font-bold">({{ $project->overdue_tasks_count }} overdue)</span>
-                        @endif
+                        <span class="text-xs text-slate-600">{{ $project->subprojects->count() }} sub-project</span>
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center justify-center gap-2">
