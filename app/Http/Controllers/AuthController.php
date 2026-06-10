@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use App\Models\User;
 use App\Services\ActivityLogger;
 use Illuminate\Validation\Rules\Password;
@@ -15,12 +16,9 @@ class AuthController extends Controller
     {
         if (Auth::check()) return redirect()->route('dashboard');
 
-        // Generate Math CAPTCHA (Requirement 3)
-        $num1 = rand(1, 9);
-        $num2 = rand(1, 9);
-        session(['captcha_answer' => $num1 + $num2]);
-
-        return view('auth.login', compact('num1', 'num2'));
+        return view('auth.login', [
+            'recaptchaSiteKey' => config('services.recaptcha.site_key'),
+        ]);
     }
 
     public function login(Request $request)
@@ -29,27 +27,27 @@ class AuthController extends Controller
         $request->validate([
             'email'    => 'required',
             'password' => 'required',
-            'captcha'  => 'required',
+            'g-recaptcha-response' => 'required',
         ], [
-            'email.required'    => 'Kredensial login tidak valid.',
-            'password.required' => 'Kredensial login tidak valid.',
-            'captcha.required'  => 'Kredensial login tidak valid.',
+            'email.required'               => 'Kredensial login tidak valid.',
+            'password.required'            => 'Kredensial login tidak valid.',
+            'g-recaptcha-response.required' => 'Harap selesaikan verifikasi reCAPTCHA.',
         ]);
 
         $genericError = 'Kredensial yang dimasukkan tidak valid atau akun dinonaktifkan.';
 
-        // Verify CAPTCHA (Requirement 3 & 4)
-        $captchaInput = (int) $request->input('captcha');
-        $captchaAnswer = session('captcha_answer');
+        // Verify Google reCAPTCHA v2 (Requirement 3)
+        $recaptchaToken    = $request->input('g-recaptcha-response');
+        $recaptchaResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => config('services.recaptcha.secret_key'),
+            'response' => $recaptchaToken,
+            'remoteip' => $request->ip(),
+        ]);
 
-        if (is_null($captchaAnswer) || $captchaInput !== $captchaAnswer) {
-            // Log failed captcha attempt
-            ActivityLogger::log('auth.captcha.failed', 'Login failed due to incorrect CAPTCHA answer.');
+        if (!$recaptchaResponse->json('success')) {
+            ActivityLogger::log('auth.captcha.failed', 'Login failed due to failed reCAPTCHA verification.');
             return back()->withErrors(['email' => $genericError])->onlyInput('email');
         }
-
-        // Clear captcha answer to prevent reuse
-        session()->forget('captcha_answer');
 
         // Find user case-insensitively
         $email = $request->input('email');

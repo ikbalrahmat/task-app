@@ -20,8 +20,6 @@ class User extends Authenticatable
         'login_attempts',
         'is_locked',
         'password_changed_at',
-        'two_factor_code',
-        'two_factor_expires_at',
     ];
 
     protected $hidden = [
@@ -32,11 +30,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_locked' => 'boolean',
+            'email_verified_at'  => 'datetime',
+            'password'           => 'hashed',
+            'is_locked'          => 'boolean',
             'password_changed_at' => 'datetime',
-            'two_factor_expires_at' => 'datetime',
         ];
     }
 

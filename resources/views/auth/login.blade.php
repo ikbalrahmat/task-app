@@ -61,13 +61,10 @@
         @enderror
     </div>
 
-    {{-- Math CAPTCHA (Requirement 3) --}}
+    {{-- Google reCAPTCHA v2 (Requirement 3) --}}
     <div class="form-group">
-        <label for="captcha">Pertanyaan Keamanan: {{ $num1 }} + {{ $num2 }} = ?</label>
-        <input type="text" id="captcha" name="captcha" required autocomplete="off"
-               placeholder="Masukkan jawaban angka"
-               class="@error('captcha') error @enderror">
-        @error('captcha')
+        <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+        @error('g-recaptcha-response')
             <div class="error-message">
                 <span>⚠</span> {{ $message }}
             </div>
@@ -87,5 +84,7 @@
     <button type="submit" class="submit-btn">Masuk</button>
 
 </form>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 @endsection

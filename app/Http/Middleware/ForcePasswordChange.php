@@ -26,7 +26,9 @@ class ForcePasswordChange
             $excludedRoutes = [
                 'logout',
                 'change-password',
-                'change-password.post'
+                'change-password.post',
+                'password.request',
+                'password.email',
             ];
 
             if (in_array($request->route()?->getName(), $excludedRoutes)) {
