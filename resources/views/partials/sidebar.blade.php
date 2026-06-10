@@ -87,7 +87,13 @@
                   {{ request()->routeIs('users.*') ? 'bg-blue-50 text-blue-600 border border-blue-100/60' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950' }}">
             <span class="text-base">👥</span> Pengguna
         </a>
+        <a href="{{ route('activity-log.index') }}"
+           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('activity-log.*') ? 'bg-blue-50 text-blue-600 border border-blue-100/60' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950' }}">
+            <span class="text-base">🛡️</span> Log Aktivitas
+        </a>
         @endif
+
     </nav>
 
     {{-- Change Password & Logout --}}

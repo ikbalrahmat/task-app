@@ -10,7 +10,7 @@
                class="bg-white border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-w-[280px] w-full sm:w-auto">
         <button type="submit" class="bg-slate-100 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-200 transition-colors">Cari</button>
         @if(request('search'))
-            <a href="{{ route('users.logs') }}" class="text-xs text-blue-600 hover:underline">Reset</a>
+            <a href="{{ route('activity-log.index') }}" class="text-xs text-blue-600 hover:underline">Reset</a>
         @endif
     </form>
     <a href="{{ route('users.index') }}"

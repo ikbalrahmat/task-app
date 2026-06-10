@@ -17,7 +17,7 @@
         <button type="submit" class="bg-slate-100 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-200 transition-colors">Filter</button>
     </form>
     <div class="flex gap-2">
-        <a href="{{ route('users.logs') }}"
+        <a href="{{ route('activity-log.index') }}"
            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all hover:-translate-y-0.5 shrink-0 shadow-sm hover:shadow-md">
             📋 Log Aktivitas Audit
         </a>

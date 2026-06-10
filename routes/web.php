@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password.post');
 
     Route::middleware('can:viewAny,App\Models\User')->group(function () {
-        Route::get('/admin/activity-logs', [UserController::class, 'logs'])->name('users.logs');
+        Route::get('/admin/activity-logs', [UserController::class, 'logs'])->name('activity-log.index');
         Route::post('/users/{user}/unlock', [UserController::class, 'unlock'])->name('users.unlock');
         Route::resource('users', UserController::class)->except(['show']);
     });
