@@ -23,19 +23,10 @@
     --color-brand-900: #172554;
 }
 
+/* Custom Scrollbar */
 @layer base {
-    body {
-        background-color: #f0f4ff;
-        color: #0f172a;
-        font-family: var(--font-sans);
-    }
-
-    input[type='range'] {
-        accent-color: var(--color-brand-500);
-    }
-
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #e0e7ff; }
-    ::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 }

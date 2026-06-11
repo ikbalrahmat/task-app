@@ -80,37 +80,40 @@
         </a>
 
         @if(auth()->user()->isAdmin())
-        <p class="text-[10px] uppercase tracking-widest text-blue-200/40 font-semibold px-3 pt-4 mb-2">Administrasi</p>
+        <p class="text-[10px] uppercase tracking-widest text-blue-400/60 font-semibold px-3 pt-5 pb-2">Administrasi</p>
         <a href="{{ route('users.index') }}"
-           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
-                  {{ request()->routeIs('users.*') ? 'bg-white/15 text-white border-l-2 border-white shadow-sm shadow-blue-900/20' : 'text-blue-100/70 hover:bg-white/10 hover:text-white' }}">
-            <span class="text-base">👥</span> Pengguna
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('users.*') ? 'bg-white/15 text-white shadow-sm shadow-blue-950/30 border border-white/10' : 'text-blue-200/60 hover:bg-white/10 hover:text-blue-100' }}">
+            <span class="w-5 text-center text-base leading-none">👥</span><span>Pengguna</span>
         </a>
         <a href="{{ route('activity-log.index') }}"
-           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
-                  {{ request()->routeIs('activity-log.*') ? 'bg-white/15 text-white border-l-2 border-white shadow-sm shadow-blue-900/20' : 'text-blue-100/70 hover:bg-white/10 hover:text-white' }}">
-            <span class="text-base">🛡️</span> Log Aktivitas
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('activity-log.*') ? 'bg-white/15 text-white shadow-sm shadow-blue-950/30 border border-white/10' : 'text-blue-200/60 hover:bg-white/10 hover:text-blue-100' }}">
+            <span class="w-5 text-center text-base leading-none">🛡️</span><span>Log Aktivitas</span>
         </a>
         @endif
 
-    </nav>
-
-    {{-- Change Password & Logout --}}
-    <div class="px-4 py-4 border-t border-white/10 space-y-2">
+        <p class="text-[10px] uppercase tracking-widest text-blue-400/60 font-semibold px-3 pt-5 pb-2">Akun</p>
+        
         <a href="{{ route('change-password') }}"
            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
-                  {{ request()->routeIs('change-password') ? 'bg-white/15 text-white border-l-2 border-white' : 'text-blue-100/70 hover:bg-white/10 hover:text-white' }}">
-            <span class="text-base">🔑</span> Ganti Password
+                  {{ request()->routeIs('change-password') ? 'bg-white/15 text-white shadow-sm shadow-blue-950/30 border border-white/10' : 'text-blue-200/60 hover:bg-white/10 hover:text-blue-100' }}">
+            <span class="w-5 text-center text-base leading-none">🔑</span><span>Ganti Password</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="w-full">
+
+        <form method="POST" action="{{ route('logout') }}" class="w-full mt-4">
             @csrf
-            <button type="submit" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-blue-100/70 hover:bg-red-500/20 hover:text-red-200 transition-all duration-150">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1"/>
+            <button type="submit"
+                    class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium
+                           text-blue-200/60 hover:bg-red-500/20 hover:text-red-300 transition-all duration-150">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1"/>
                 </svg>
-                Keluar
+                <span>Keluar</span>
             </button>
         </form>
-    </div>
+
+    </nav>
 </aside>
 
