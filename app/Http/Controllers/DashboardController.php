@@ -19,6 +19,10 @@ class DashboardController extends Controller
         if (!in_array($year, $availableYears)) $availableYears[] = $year;
         rsort($availableYears);
 
+        $recentUsers = auth()->user()->isAdmin() ? \App\Models\User::latest()->take(5)->get() : collect();
+        $recentActivities = auth()->user()->isAdmin() ? \App\Models\ActivityLog::with('user')->latest()->take(6)->get() : collect();
+        $totalUsers = auth()->user()->isAdmin() ? \App\Models\User::count() : 0;
+
         return view('dashboard.index', [
             'year'              => $year,
             'stats'             => $stats,
@@ -26,6 +30,9 @@ class DashboardController extends Controller
             'upcomingDeadlines' => $this->service->getUpcomingDeadlines(7),
             'activeTasks'       => $this->service->getActiveTasks($year),
             'years'             => $availableYears,
+            'recentUsers'       => $recentUsers,
+            'recentActivities'  => $recentActivities,
+            'totalUsers'        => $totalUsers,
         ]);
     }
 }

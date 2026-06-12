@@ -21,7 +21,7 @@
 </form>
 
 {{-- Stats Cards --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 {{ auth()->user()->isAdmin() ? 'lg:grid-cols-5' : 'lg:grid-cols-4' }} gap-6 mb-8">
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
         <div class="flex items-center justify-between mb-4">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
@@ -65,44 +65,68 @@
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['overdue_count'] }}</div>
         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Task Overdue</div>
     </div>
+
+    @if(auth()->user()->isAdmin())
+    <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <span class="text-[10px] uppercase tracking-widest text-indigo-700 bg-indigo-100/50 px-2.5 py-1 rounded-lg font-bold">ALL</span>
+        </div>
+        <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $totalUsers }}</div>
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total User</div>
+    </div>
+    @endif
 </div>
 
 {{-- Progress Tahunan --}}
 <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-8 mb-8 relative overflow-hidden">
     <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 relative z-10">
-        <div>
-            <h2 class="font-bold text-xl text-blue-950">Progress Tahunan {{ $year }}</h2>
-            <p class="text-sm text-slate-500 mt-1">Rata-rata progres seluruh project</p>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10 items-center">
+        {{-- Progress Bar Kiri --}}
+        <div class="lg:col-span-2 flex flex-col justify-center">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
+                <div>
+                    <h2 class="font-bold text-xl text-blue-950">Progress Tahunan {{ $year }}</h2>
+                    <p class="text-sm text-slate-500 mt-1">Rata-rata progres seluruh project</p>
+                </div>
+                <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mt-2 sm:mt-0">{{ $stats['year_progress'] }}%</span>
+            </div>
+            <div class="w-full bg-slate-100/80 rounded-full h-4 p-0.5 border border-white shadow-inner">
+                <div class="h-full rounded-full transition-all duration-1000 ease-out shadow-sm"
+                     style="width: {{ $stats['year_progress'] }}%; background: linear-gradient(90deg, #3b82f6, #6366f1)"></div>
+            </div>
         </div>
-        <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mt-2 sm:mt-0">{{ $stats['year_progress'] }}%</span>
-    </div>
-    <div class="w-full bg-slate-100/80 rounded-full h-4 p-0.5 border border-white relative z-10 shadow-inner">
-        <div class="h-full rounded-full transition-all duration-1000 ease-out shadow-sm"
-             style="width: {{ $stats['year_progress'] }}%; background: linear-gradient(90deg, #3b82f6, #6366f1)"></div>
+        
+        {{-- Pie Chart 3D Kanan --}}
+        <div class="lg:col-span-1 lg:border-l border-slate-200/60 lg:pl-8 flex flex-col items-center justify-center">
+            <div id="annualProgressPie3D" class="w-full h-[200px]"></div>
+        </div>
     </div>
 </div>
 
 {{-- Grafik & Visualisasi --}}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+{{-- Bar Chart: Kesesuaian Waktu (Full Width with max-w to prevent "melar") --}}
+<div class="max-w-5xl mx-auto w-full mb-8">
+    <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 relative overflow-hidden min-w-0">
+        <h2 class="font-bold text-lg text-blue-950 mb-1">Kesesuaian Jadwal (Rencana vs Realisasi)</h2>
+        <p class="text-xs text-slate-500 mb-4">Melihat data Project, Sub-Project, dan Task yang sesuai, lebih cepat, atau terlambat.</p>
+        <div id="taskTimelineChart" class="w-full min-h-[280px]"></div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
     {{-- Pie Chart: Status Task --}}
-    <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 relative overflow-hidden flex flex-col">
+    <div class="xl:col-span-1 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 relative overflow-hidden flex flex-col h-full">
         <h2 class="font-bold text-lg text-blue-950 mb-1">Status Task</h2>
         <p class="text-xs text-slate-500 mb-4">Distribusi task tahun {{ $year }}</p>
         <div id="taskStatusChart" class="flex-1 flex items-center justify-center -mt-4"></div>
     </div>
-    
-    {{-- Bar Chart: Kesesuaian Waktu --}}
-    <div class="lg:col-span-2 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 relative overflow-hidden">
-        <h2 class="font-bold text-lg text-blue-950 mb-1">Kesesuaian Jadwal (Rencana vs Realisasi)</h2>
-        <p class="text-xs text-slate-500 mb-4">Melihat data Project, Sub-Project, dan Task yang sesuai, lebih cepat, atau terlambat.</p>
-        <div id="taskTimelineChart" class="w-full"></div>
-    </div>
-</div>
 
-<div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
     {{-- Progress Per Project --}}
-    <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8">
+    <div class="xl:col-span-2 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8">
         <div class="flex items-center justify-between mb-6">
             <h2 class="font-bold text-lg text-blue-950">Progress Per Project</h2>
             <a href="{{ route('projects.index') }}" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-xl font-bold transition-colors">Lihat Semua →</a>
@@ -245,12 +269,96 @@
         </div>
     </div>
 </div>
+
+@if(auth()->user()->isAdmin())
+{{-- Admin Only Row: User Management & Activity Log --}}
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-8">
+    {{-- User Management --}}
+    <div class="xl:col-span-1 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 flex flex-col h-full">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-bold text-lg text-blue-950">Pengguna Terbaru 👥</h2>
+            <a href="{{ route('users.index') }}" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-xl font-bold transition-colors">Kelola →</a>
+        </div>
+        <div class="space-y-3 flex-1">
+            @forelse($recentUsers as $u)
+            <div class="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 text-xs font-bold shrink-0">
+                    {{ strtoupper(substr($u->name, 0, 2)) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-bold text-slate-800 truncate">{{ $u->name }}</div>
+                    <div class="text-xs text-slate-500 font-medium">{{ $u->role }}</div>
+                </div>
+            </div>
+            @empty
+            <div class="text-center py-8 text-slate-400 text-sm font-medium">Belum ada pengguna.</div>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- Activity Log --}}
+    <div class="xl:col-span-2 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 flex flex-col h-full">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-bold text-lg text-blue-950">Audit Trail (Aktivitas Sistem) 📝</h2>
+        </div>
+        <div class="space-y-4 flex-1">
+            @forelse($recentActivities as $log)
+            <div class="flex items-start gap-4 p-4 border border-slate-100 rounded-2xl bg-white hover:border-blue-200 transition-colors">
+                <div class="w-2 h-2 rounded-full bg-blue-500 mt-2 shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-4 mb-1">
+                        <span class="text-sm font-bold text-slate-800">{{ $log->user->name ?? 'System' }}</span>
+                        <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md shrink-0">{{ $log->created_at->diffForHumans() }}</span>
+                    </div>
+                    <div class="text-xs font-semibold text-blue-600 mb-1 uppercase tracking-wider">{{ $log->event_type }}</div>
+                    <p class="text-sm text-slate-600 line-clamp-2">{{ $log->description }}</p>
+                </div>
+            </div>
+            @empty
+            <div class="text-center py-8 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                <p class="text-slate-400 text-sm font-medium">Belum ada log aktivitas.</p>
+            </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 3D Pie Chart using Google Charts
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(draw3DPieChart);
+    
+    function draw3DPieChart() {
+        var progress = {{ $stats['year_progress'] }};
+        var remaining = 100 - progress;
+        
+        var data = google.visualization.arrayToDataTable([
+            ['Status', 'Persentase'],
+            ['Selesai', progress],
+            ['Belum', remaining]
+        ]);
+
+        var options = {
+            is3D: true,
+            backgroundColor: 'transparent',
+            colors: ['#3b82f6', '#e2e8f0'],
+            legend: { position: 'bottom', textStyle: { color: '#64748b', fontSize: 11, bold: true } },
+            chartArea: { width: '100%', height: '85%' },
+            pieSliceText: 'percentage',
+            pieSliceTextStyle: { fontSize: 12, bold: true },
+            tooltip: { textStyle: { fontSize: 12 } }
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('annualProgressPie3D'));
+        chart.draw(data, options);
+    }
+
     // 1. Pie Chart - Status Task
     var optionsPie = {
         series: [{{ $stats['done_tasks'] }}, {{ $stats['ongoing_tasks'] }}, {{ $stats['not_started_tasks'] }}, {{ $stats['overdue_count'] }}],
@@ -301,6 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chart: {
             type: 'bar',
             height: 280,
+            width: '100%',
             toolbar: { show: false },
             background: 'transparent'
         },
@@ -334,10 +443,14 @@ document.addEventListener('DOMContentLoaded', function() {
         grid: {
             borderColor: '#f1f5f9',
             strokeDashArray: 4,
+            padding: {
+                right: 20,
+                left: 10
+            }
         },
         legend: {
             position: 'top',
-            horizontalAlign: 'right',
+            horizontalAlign: 'center',
             fontSize: '12px',
             fontWeight: 600,
             markers: { radius: 12 }
