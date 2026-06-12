@@ -18,6 +18,26 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'department' => 'nullable|string|max:255',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->department = $request->department;
+        $user->save();
+
+        ActivityLogger::log('user.profile.updated', 'User memperbarui data profil.', $user->id);
+
+        return back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
     public function updatePassword(Request $request)
     {
         $user = Auth::user();

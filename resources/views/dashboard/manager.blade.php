@@ -65,19 +65,6 @@
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['overdue_count'] }}</div>
         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Task Overdue</div>
     </div>
-
-    @if(auth()->user()->isAdmin())
-    <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            </div>
-            <span class="text-[10px] uppercase tracking-widest text-indigo-700 bg-indigo-100/50 px-2.5 py-1 rounded-lg font-bold">ALL</span>
-        </div>
-        <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $totalUsers }}</div>
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total User</div>
-    </div>
-    @endif
 </div>
 
 {{-- Progress Tahunan --}}
@@ -107,13 +94,27 @@
     </div>
 </div>
 
-{{-- Grafik & Visualisasi --}}
-{{-- Bar Chart: Kesesuaian Waktu (Full Width with max-w to prevent "melar") --}}
-<div class="max-w-5xl mx-auto w-full mb-8">
-    <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 relative overflow-hidden min-w-0">
-        <h2 class="font-bold text-lg text-blue-950 mb-1">Kesesuaian Jadwal (Rencana vs Realisasi)</h2>
-        <p class="text-xs text-slate-500 mb-4">Melihat data Project, Sub-Project, dan Task yang sesuai, lebih cepat, atau terlambat.</p>
-        <div id="taskTimelineChart" class="w-full min-h-[280px]"></div>
+{{-- Beban Kerja Tim --}}
+<div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="font-bold text-lg text-blue-950">Beban Kerja Tim 👥</h2>
+        <span class="text-[10px] uppercase tracking-widest text-indigo-700 bg-indigo-100/50 px-2.5 py-1 rounded-lg font-bold">Berdasarkan Task Aktif</span>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        @forelse($teamWorkload as $member)
+        <div class="p-4 border border-slate-100 rounded-2xl bg-white shadow-sm flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 text-sm font-bold mb-3 shadow-sm">
+                {{ strtoupper(substr($member->name, 0, 2)) }}
+            </div>
+            <div class="text-sm font-bold text-slate-800 mb-0.5 line-clamp-1 w-full" title="{{ $member->name }}">{{ $member->name }}</div>
+            <div class="text-xs text-slate-500 font-medium mb-3">{{ $member->role }}</div>
+            <div class="mt-auto bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-lg w-full">
+                {{ $member->tasks_count }} Task Aktif
+            </div>
+        </div>
+        @empty
+        <div class="col-span-full text-center py-8 text-slate-400 text-sm font-medium">Belum ada tugas yang dibebankan ke tim.</div>
+        @endforelse
     </div>
 </div>
 
@@ -133,11 +134,18 @@
         </div>
         <div class="space-y-6">
             @forelse($stats['projects'] as $project)
-            <div class="group">
+            <div class="group" x-data="{ expanded: false }">
                 <div class="flex items-center justify-between mb-2">
-                    <a href="{{ route('projects.show', $project->id) }}" class="text-sm font-bold text-slate-700 group-hover:text-blue-600 transition-colors truncate pr-4">
-                        {{ $project->name }}
-                    </a>
+                    <div class="flex items-center gap-1">
+                        @if($project->subprojects->isNotEmpty())
+                        <button @click="expanded = !expanded" class="p-1 -ml-1 rounded-md hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none">
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                        @endif
+                        <a href="{{ route('projects.show', $project->id) }}" class="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors truncate pr-4">
+                            {{ $project->name }}
+                        </a>
+                    </div>
                     <span class="text-sm font-black text-blue-600 shrink-0">{{ $project->progress }}%</span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2.5 mb-2">
@@ -152,7 +160,7 @@
                     <span class="uppercase tracking-wider">{{ $project->status }}</span>
                 </div>
                 @if($project->subprojects->isNotEmpty())
-                <div class="mt-4 pl-4 border-l-2 border-slate-100 space-y-3">
+                <div x-show="expanded" style="display: none;" class="mt-4 pl-4 border-l-2 border-slate-100 space-y-3">
                     @foreach($project->subprojects as $sub)
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
@@ -270,59 +278,7 @@
     </div>
 </div>
 
-@if(auth()->user()->isAdmin())
-{{-- Admin Only Row: User Management & Activity Log --}}
-<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-8">
-    {{-- User Management --}}
-    <div class="xl:col-span-1 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 flex flex-col h-full">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="font-bold text-lg text-blue-950">Pengguna Terbaru 👥</h2>
-            <a href="{{ route('users.index') }}" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-xl font-bold transition-colors">Kelola →</a>
-        </div>
-        <div class="space-y-3 flex-1">
-            @forelse($recentUsers as $u)
-            <div class="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 text-xs font-bold shrink-0">
-                    {{ strtoupper(substr($u->name, 0, 2)) }}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-sm font-bold text-slate-800 truncate">{{ $u->name }}</div>
-                    <div class="text-xs text-slate-500 font-medium">{{ $u->role }}</div>
-                </div>
-            </div>
-            @empty
-            <div class="text-center py-8 text-slate-400 text-sm font-medium">Belum ada pengguna.</div>
-            @endforelse
-        </div>
-    </div>
 
-    {{-- Activity Log --}}
-    <div class="xl:col-span-2 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8 flex flex-col h-full">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="font-bold text-lg text-blue-950">Audit Trail (Aktivitas Sistem) 📝</h2>
-        </div>
-        <div class="space-y-4 flex-1">
-            @forelse($recentActivities as $log)
-            <div class="flex items-start gap-4 p-4 border border-slate-100 rounded-2xl bg-white hover:border-blue-200 transition-colors">
-                <div class="w-2 h-2 rounded-full bg-blue-500 mt-2 shrink-0"></div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between gap-4 mb-1">
-                        <span class="text-sm font-bold text-slate-800">{{ $log->user->name ?? 'System' }}</span>
-                        <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md shrink-0">{{ $log->created_at->diffForHumans() }}</span>
-                    </div>
-                    <div class="text-xs font-semibold text-blue-600 mb-1 uppercase tracking-wider">{{ $log->event_type }}</div>
-                    <p class="text-sm text-slate-600 line-clamp-2">{{ $log->description }}</p>
-                </div>
-            </div>
-            @empty
-            <div class="text-center py-8 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-                <p class="text-slate-400 text-sm font-medium">Belum ada log aktivitas.</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
-</div>
-@endif
 @endsection
 
 @push('scripts')
@@ -357,9 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var chart = new google.visualization.PieChart(document.getElementById('annualProgressPie3D'));
         chart.draw(data, options);
-    }
-
-    // 1. Pie Chart - Status Task
+    }    // 1. Pie Chart - Status Task
     var optionsPie = {
         series: [{{ $stats['done_tasks'] }}, {{ $stats['ongoing_tasks'] }}, {{ $stats['not_started_tasks'] }}, {{ $stats['overdue_count'] }}],
         chart: { type: 'donut', height: 260, background: 'transparent' },
@@ -378,86 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var chartPie = new ApexCharts(document.querySelector("#taskStatusChart"), optionsPie);
     chartPie.render();
 
-    // 2. Bar Chart - Kesesuaian Jadwal
-    var optionsBar = {
-        series: [
-            {
-                name: 'Tepat Waktu',
-                data: [
-                    {{ $stats['timing_stats']['projects']['tepat'] }}, 
-                    {{ $stats['timing_stats']['subprojects']['tepat'] }}, 
-                    {{ $stats['timing_stats']['tasks']['tepat'] }}
-                ]
-            },
-            {
-                name: 'Lebih Cepat',
-                data: [
-                    {{ $stats['timing_stats']['projects']['maju'] }}, 
-                    {{ $stats['timing_stats']['subprojects']['maju'] }}, 
-                    {{ $stats['timing_stats']['tasks']['maju'] }}
-                ]
-            },
-            {
-                name: 'Terlambat (Molor)',
-                data: [
-                    {{ $stats['timing_stats']['projects']['telat'] }}, 
-                    {{ $stats['timing_stats']['subprojects']['telat'] }}, 
-                    {{ $stats['timing_stats']['tasks']['telat'] }}
-                ]
-            }
-        ],
-        chart: {
-            type: 'bar',
-            height: 280,
-            width: '100%',
-            toolbar: { show: false },
-            background: 'transparent'
-        },
-        colors: ['#3b82f6', '#10b981', '#f43f5e'], // Biru (Tepat), Hijau (Maju), Merah (Telat)
-        plotOptions: {
-            bar: {
-                horizontal: false,
-                columnWidth: '55%',
-                borderRadius: 4
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            show: true,
-            width: 2,
-            colors: ['transparent']
-        },
-        xaxis: {
-            categories: ['Project', 'Sub-Project', 'Task'],
-            labels: { style: { colors: '#64748b', fontWeight: 600 } }
-        },
-        yaxis: {
-            title: { text: 'Jumlah' },
-            labels: { style: { colors: '#334155', fontWeight: 600, fontSize: '11px' } }
-        },
-        fill: {
-            opacity: 1
-        },
-        grid: {
-            borderColor: '#f1f5f9',
-            strokeDashArray: 4,
-            padding: {
-                right: 20,
-                left: 10
-            }
-        },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'center',
-            fontSize: '12px',
-            fontWeight: 600,
-            markers: { radius: 12 }
-        }
-    };
-    var chartBar = new ApexCharts(document.querySelector("#taskTimelineChart"), optionsBar);
-    chartBar.render();
+
 });
 </script>
 @endpush

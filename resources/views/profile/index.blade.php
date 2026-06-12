@@ -26,8 +26,51 @@
             </div>
         </div>
 
-        {{-- Change Password Form (Right Column) --}}
-        <div class="lg:col-span-2">
+        {{-- Edit Profile & Change Password (Right Column) --}}
+        <div class="lg:col-span-2 space-y-6">
+            {{-- Edit Profile Form --}}
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        Ubah Profil
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Perbarui informasi profil dasar Anda di sini.</p>
+                </div>
+                <div class="p-8">
+                    <form action="{{ route('profile.update') }}" method="POST" class="space-y-6 max-w-md">
+                        @csrf
+                        @method('PUT')
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required 
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400">
+                            @error('name') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Email</label>
+                            <input type="email" name="email" value="{{ old('email', $user->email) }}" required 
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400">
+                            @error('email') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Departemen</label>
+                            <input type="text" name="department" value="{{ old('department', $user->department) }}" 
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
+                                   placeholder="Contoh: IT, Keuangan, dll">
+                            @error('department') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-3 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-lg hover:-translate-y-0.5">
+                                Simpan Profil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
                     <h3 class="font-bold text-slate-800 flex items-center gap-2">

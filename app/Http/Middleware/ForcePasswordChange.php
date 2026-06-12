@@ -22,11 +22,11 @@ class ForcePasswordChange
                 return $next($request);
             }
 
-            // Exclude logout and change-password routes from redirection
+            // Exclude logout and profile routes from redirection
             $excludedRoutes = [
                 'logout',
-                'change-password',
-                'change-password.post',
+                'profile.index',
+                'profile.password',
                 'password.request',
                 'password.email',
             ];
@@ -47,7 +47,7 @@ class ForcePasswordChange
             }
 
             if ($mustChange) {
-                return redirect()->route('change-password')
+                return redirect()->route('profile.index')
                     ->with('warning', 'Anda wajib mengganti password Anda demi alasan keamanan (password kedaluwarsa atau pertama kali masuk).');
             }
         }
