@@ -13,6 +13,7 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubprojectController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,8 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::get('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 
-    Route::get('/change-password', [AuthController::class, 'showChangePassword'])->name('change-password');
-    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password.post');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     Route::middleware('can:viewAny,App\Models\User')->group(function () {
         Route::get('/admin/activity-logs', [UserController::class, 'logs'])->name('activity-log.index');

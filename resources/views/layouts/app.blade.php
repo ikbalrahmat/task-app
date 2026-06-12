@@ -90,13 +90,39 @@
                 </div>
                 
                 <span class="text-[#e0e7ff]">|</span>
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] flex items-center justify-center font-bold text-white text-xs shadow-sm shadow-blue-900/20">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                    </div>
-                    <div class="hidden sm:block">
-                        <div class="text-xs font-semibold text-[#1e3a8a]">{{ auth()->user()->name }}</div>
-                        <div class="text-[10px] text-[#2563eb]/60">{{ auth()->user()->role }}</div>
+                <div class="relative" x-data="{ profileOpen: false }">
+                    <button @click="profileOpen = !profileOpen" class="flex items-center gap-2.5 hover:bg-[#e0e7ff]/50 p-1.5 rounded-xl transition-colors text-left">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] flex items-center justify-center font-bold text-white text-xs shadow-sm shadow-blue-900/20">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                        </div>
+                        <div class="hidden sm:block">
+                            <div class="text-xs font-semibold text-[#1e3a8a]">{{ auth()->user()->name }}</div>
+                            <div class="text-[10px] text-[#2563eb]/60">{{ auth()->user()->role }}</div>
+                        </div>
+                        <svg class="w-4 h-4 text-[#1e3a8a]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    
+                    <div x-show="profileOpen" @click.outside="profileOpen = false"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         class="absolute right-0 mt-2.5 w-48 bg-white border border-[#e0e7ff] rounded-2xl shadow-xl shadow-blue-900/8 z-50 p-2"
+                         style="display: none;">
+                        <a href="{{ route('profile.index') }}" class="flex items-center gap-2 px-3 py-2 text-sm text-[#1e3a8a] hover:bg-[#f0f4ff] rounded-xl transition-colors font-medium">
+                            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                            Profil Saya
+                        </a>
+                        <div class="h-px bg-[#e0e7ff] my-1"></div>
+                        <form method="POST" action="{{ route('logout') }}" class="w-full">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium">
+                                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1" /></svg>
+                                Keluar
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

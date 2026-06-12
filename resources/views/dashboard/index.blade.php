@@ -24,7 +24,9 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
         <div class="flex items-center justify-between mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl shadow-lg shadow-blue-500/30">📁</div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            </div>
             <span class="text-[10px] uppercase tracking-widest text-blue-700 bg-blue-100/50 px-2.5 py-1 rounded-lg font-bold">{{ $year }}</span>
         </div>
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['total_projects'] }}</div>
@@ -33,7 +35,9 @@
     
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
         <div class="flex items-center justify-between mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-500/30">🚀</div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
             <span class="text-[10px] uppercase tracking-widest text-emerald-700 bg-emerald-100/50 px-2.5 py-1 rounded-lg font-bold">Aktif</span>
         </div>
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['active_projects'] }}</div>
@@ -42,7 +46,9 @@
     
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
         <div class="flex items-center justify-between mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-2xl shadow-lg shadow-purple-500/30">✅</div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            </div>
             <span class="text-[10px] uppercase tracking-widest text-purple-700 bg-purple-100/50 px-2.5 py-1 rounded-lg font-bold">{{ $stats['done_tasks'] }}/{{ $stats['total_tasks'] }}</span>
         </div>
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['total_tasks'] }}</div>
@@ -51,7 +57,9 @@
     
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
         <div class="flex items-center justify-between mb-4">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-rose-500/30">⚠️</div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-rose-500/30">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
             <span class="text-[10px] uppercase tracking-widest text-rose-700 bg-rose-100/50 px-2.5 py-1 rounded-lg font-bold">Overdue</span>
         </div>
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['overdue_count'] }}</div>
