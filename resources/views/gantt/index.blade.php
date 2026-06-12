@@ -90,13 +90,22 @@
     $ganttTasks = $projects->flatMap(function($p) {
         $arr = [];
         foreach($p->tasks as $t) {
+            $planStart = $t->start_date ? \Carbon\Carbon::parse($t->start_date) : now();
+            $planEnd = $t->due_date ? \Carbon\Carbon::parse($t->due_date) : $planStart->copy()->addDays(7);
+            
+            // Frappe Gantt crashes if end <= start
+            if ($planEnd->startOfDay()->lte($planStart->startOfDay())) {
+                $planEnd = $planStart->copy()->addDay();
+            }
+
             // Planned Baseline
             $arr[] = [
                 'id'           => "plan_" . $t->id,
                 'name'         => "[Rencana] " . $t->name,
-                'start'        => $t->start_date?->format('Y-m-d') ?? now()->format('Y-m-d'),
-                'end'          => $t->due_date?->format('Y-m-d') ?? now()->addDays(7)->format('Y-m-d'),
-                'progress'     => $t->progress,
+                'start'        => $planStart->format('Y-m-d 00:00:00'),
+                'end'          => $planEnd->format('Y-m-d 23:59:59'),
+                'progress'     => $t->progress ?? 0,
+                'dependencies' => '',
                 'project'      => $p->name,
                 'custom_class' => 'bar-planned',
                 'real_id'      => $t->id,
@@ -105,12 +114,20 @@
             
             // Actual Realization (only if started)
             if ($t->actual_start_date) {
+                $actualStart = \Carbon\Carbon::parse($t->actual_start_date);
+                $actualEnd = $t->actual_end_date ? \Carbon\Carbon::parse($t->actual_end_date) : now();
+                
+                if ($actualEnd->startOfDay()->lte($actualStart->startOfDay())) {
+                    $actualEnd = $actualStart->copy()->addDay();
+                }
+
                 $arr[] = [
                     'id'           => "actual_" . $t->id,
                     'name'         => "[Realisasi] " . $t->name,
-                    'start'        => $t->actual_start_date->format('Y-m-d'),
-                    'end'          => $t->actual_end_date?->format('Y-m-d') ?? now()->format('Y-m-d'),
-                    'progress'     => $t->progress,
+                    'start'        => $actualStart->format('Y-m-d 00:00:00'),
+                    'end'          => $actualEnd->format('Y-m-d 23:59:59'),
+                    'progress'     => $t->progress ?? 0,
+                    'dependencies' => '',
                     'project'      => $p->name,
                     'custom_class' => 'bar-actual',
                     'real_id'      => $t->id,

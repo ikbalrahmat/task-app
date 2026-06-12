@@ -100,7 +100,16 @@
                 
                 <div class="flex justify-between items-center pt-4 mt-2 border-t border-slate-200/60">
                     <span class="text-slate-500">Realisasi Mulai</span>
-                    <span class="text-blue-600 font-black">{{ $task->actual_start_date?->format('d M Y') ?? '-' }}</span>
+                    <div class="text-right">
+                        <span class="text-blue-600 font-black block">{{ $task->actual_start_date?->format('d M Y') ?? '-' }}</span>
+                        @if($task->start_delay_days > 0)
+                            <span class="text-[10px] text-rose-700 font-black bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-md mt-1.5 inline-block shadow-sm">Telat Mulai {{ $task->start_delay_days }} Hari</span>
+                        @elseif($task->start_delay_days < 0)
+                            <span class="text-[10px] text-emerald-700 font-black bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-md mt-1.5 inline-block shadow-sm">Mulai Lebih Cepat {{ abs($task->start_delay_days) }} Hari</span>
+                        @elseif($task->actual_start_date)
+                            <span class="text-[10px] text-blue-700 font-black bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-md mt-1.5 inline-block shadow-sm">Tepat Waktu</span>
+                        @endif
+                    </div>
                 </div>
                 @if($task->actual_start_remarks)
                     <div class="bg-amber-50/80 border border-amber-200/50 rounded-xl p-3 text-xs text-amber-800 mt-2 shadow-sm">

@@ -59,6 +59,18 @@ class Subproject extends Model
         return (int) round($this->tasks->avg('progress'));
     }
 
+    public function getStartDelayDaysAttribute(): int
+    {
+        if (!$this->start_date || !$this->actual_start_date) return 0;
+        return (int) $this->start_date->startOfDay()->diffInDays($this->actual_start_date->startOfDay(), false);
+    }
+
+    public function getDelayDaysAttribute(): int
+    {
+        if (!$this->end_date || !$this->actual_end_date) return 0;
+        return (int) $this->end_date->startOfDay()->diffInDays($this->actual_end_date->startOfDay(), false);
+    }
+
     public function recalculateStatus(): void
     {
         $tasks = $this->tasks;

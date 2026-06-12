@@ -17,6 +17,7 @@ class DashboardService
     public function getStats(int $year): array
     {
         $projects = $this->projectRepo->all(['year' => $year]);
+        $subprojects = \App\Models\Subproject::whereHas('project', fn($q) => $q->where('year', $year))->get();
         
         $tasksQuery = Task::whereHas('project', fn($q) => $q->where('year', $year));
         if (auth()->check() && !auth()->user()->hasCrudAccess()) {
@@ -30,14 +31,45 @@ class DashboardService
             ? $projects->map(fn($p) => $p->progress)->avg()
             : 0;
 
+        // Fungsi bantuan untuk menghitung kesesuaian waktu
+        $calculateTiming = function($items, $dateField = 'end_date') {
+            $result = ['tepat' => 0, 'telat' => 0, 'maju' => 0];
+            $now = now()->startOfDay();
+            
+            foreach ($items as $item) {
+                if ($item->status === 'Selesai' || !empty($item->actual_end_date)) {
+                    $delay = $item->delay_days ?? 0;
+                    if ($delay > 0) $result['telat']++;
+                    elseif ($delay < 0) $result['maju']++;
+                    else $result['tepat']++;
+                } else {
+                    // Belum selesai, cek apakah sudah lewat deadline dari waktu sekarang
+                    $due = $item->{$dateField} ? \Carbon\Carbon::parse($item->{$dateField})->startOfDay() : null;
+                    if ($due && $due->lt($now)) {
+                        $result['telat']++;
+                    } else {
+                        $result['tepat']++;
+                    }
+                }
+            }
+            return $result;
+        };
+
         return [
-            'total_projects'  => $projects->count(),
-            'active_projects' => $projects->where('status', 'Berjalan')->count(),
-            'total_tasks'     => $tasks->count(),
-            'done_tasks'      => $tasks->where('status', 'Selesai')->count(),
-            'overdue_count'   => $overdue->where(fn($t) => in_array($t->project->year ?? 0, [$year]))->count(),
-            'year_progress'   => (int) round($totalProgress),
-            'projects'        => $projects,
+            'total_projects'    => $projects->count(),
+            'active_projects'   => $projects->where('status', 'Berjalan')->count(),
+            'total_tasks'       => $tasks->count(),
+            'done_tasks'        => $tasks->where('status', 'Selesai')->count(),
+            'ongoing_tasks'     => $tasks->where('status', 'Berjalan')->count(),
+            'not_started_tasks' => $tasks->where('status', 'Belum Mulai')->count(),
+            'overdue_count'     => $overdue->where(fn($t) => in_array($t->project->year ?? 0, [$year]))->count(),
+            'year_progress'     => (int) round($totalProgress),
+            'projects'          => $projects,
+            'timing_stats'      => [
+                'projects'    => $calculateTiming($projects, 'end_date'),
+                'subprojects' => $calculateTiming($subprojects, 'end_date'),
+                'tasks'       => $calculateTiming($tasks, 'due_date'),
+            ]
         ];
     }
 

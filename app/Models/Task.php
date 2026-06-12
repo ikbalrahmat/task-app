@@ -89,6 +89,12 @@ class Task extends Model
         return "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$title}&dates={$start}/{$end}&details={$desc}";
     }
 
+    public function getStartDelayDaysAttribute(): int
+    {
+        if (!$this->start_date || !$this->actual_start_date) return 0;
+        return (int) $this->start_date->startOfDay()->diffInDays($this->actual_start_date->startOfDay(), false);
+    }
+
     public function getDelayDaysAttribute(): int
     {
         if (!$this->due_date || !$this->actual_end_date) return 0;

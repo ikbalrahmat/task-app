@@ -75,6 +75,23 @@
     </div>
 </div>
 
+{{-- Grafik & Visualisasi --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    {{-- Pie Chart: Status Task --}}
+    <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 relative overflow-hidden flex flex-col">
+        <h2 class="font-bold text-lg text-blue-950 mb-1">Status Task</h2>
+        <p class="text-xs text-slate-500 mb-4">Distribusi task tahun {{ $year }}</p>
+        <div id="taskStatusChart" class="flex-1 flex items-center justify-center -mt-4"></div>
+    </div>
+    
+    {{-- Bar Chart: Kesesuaian Waktu --}}
+    <div class="lg:col-span-2 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 relative overflow-hidden">
+        <h2 class="font-bold text-lg text-blue-950 mb-1">Kesesuaian Jadwal (Rencana vs Realisasi)</h2>
+        <p class="text-xs text-slate-500 mb-4">Melihat data Project, Sub-Project, dan Task yang sesuai, lebih cepat, atau terlambat.</p>
+        <div id="taskTimelineChart" class="w-full"></div>
+    </div>
+</div>
+
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
     {{-- Progress Per Project --}}
     <div class="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8">
@@ -221,3 +238,106 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Pie Chart - Status Task
+    var optionsPie = {
+        series: [{{ $stats['done_tasks'] }}, {{ $stats['ongoing_tasks'] }}, {{ $stats['not_started_tasks'] }}, {{ $stats['overdue_count'] }}],
+        chart: { type: 'donut', height: 260, background: 'transparent' },
+        labels: ['Selesai', 'Berjalan', 'Belum Mulai', 'Overdue'],
+        colors: ['#10b981', '#3b82f6', '#cbd5e1', '#f43f5e'],
+        plotOptions: {
+            pie: { 
+                donut: { size: '75%' },
+                expandOnClick: false
+            }
+        },
+        dataLabels: { enabled: false },
+        stroke: { width: 0 },
+        legend: { position: 'bottom', fontSize: '12px', fontWeight: 600, markers: { radius: 12 } }
+    };
+    var chartPie = new ApexCharts(document.querySelector("#taskStatusChart"), optionsPie);
+    chartPie.render();
+
+    // 2. Bar Chart - Kesesuaian Jadwal
+    var optionsBar = {
+        series: [
+            {
+                name: 'Tepat Waktu',
+                data: [
+                    {{ $stats['timing_stats']['projects']['tepat'] }}, 
+                    {{ $stats['timing_stats']['subprojects']['tepat'] }}, 
+                    {{ $stats['timing_stats']['tasks']['tepat'] }}
+                ]
+            },
+            {
+                name: 'Lebih Cepat',
+                data: [
+                    {{ $stats['timing_stats']['projects']['maju'] }}, 
+                    {{ $stats['timing_stats']['subprojects']['maju'] }}, 
+                    {{ $stats['timing_stats']['tasks']['maju'] }}
+                ]
+            },
+            {
+                name: 'Terlambat (Molor)',
+                data: [
+                    {{ $stats['timing_stats']['projects']['telat'] }}, 
+                    {{ $stats['timing_stats']['subprojects']['telat'] }}, 
+                    {{ $stats['timing_stats']['tasks']['telat'] }}
+                ]
+            }
+        ],
+        chart: {
+            type: 'bar',
+            height: 280,
+            toolbar: { show: false },
+            background: 'transparent'
+        },
+        colors: ['#3b82f6', '#10b981', '#f43f5e'], // Biru (Tepat), Hijau (Maju), Merah (Telat)
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                borderRadius: 4
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: ['Project', 'Sub-Project', 'Task'],
+            labels: { style: { colors: '#64748b', fontWeight: 600 } }
+        },
+        yaxis: {
+            title: { text: 'Jumlah' },
+            labels: { style: { colors: '#334155', fontWeight: 600, fontSize: '11px' } }
+        },
+        fill: {
+            opacity: 1
+        },
+        grid: {
+            borderColor: '#f1f5f9',
+            strokeDashArray: 4,
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            fontSize: '12px',
+            fontWeight: 600,
+            markers: { radius: 12 }
+        }
+    };
+    var chartBar = new ApexCharts(document.querySelector("#taskTimelineChart"), optionsBar);
+    chartBar.render();
+});
+</script>
+@endpush
+

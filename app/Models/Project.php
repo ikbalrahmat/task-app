@@ -73,6 +73,12 @@ class Project extends Model
             ->where('status', '!=', 'Selesai')->count();
     }
 
+    public function getStartDelayDaysAttribute(): int
+    {
+        if (!$this->start_date || !$this->actual_start_date) return 0;
+        return (int) $this->start_date->startOfDay()->diffInDays($this->actual_start_date->startOfDay(), false);
+    }
+
     public function getDelayDaysAttribute(): int
     {
         if (!$this->end_date || !$this->actual_end_date) return 0;

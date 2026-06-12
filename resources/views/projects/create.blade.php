@@ -4,7 +4,7 @@
 @section('subheading', 'Buat project baru')
 
 @section('content')
-<div class="max-w-2xl">
+<div class="max-w-3xl mx-auto">
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-8 shadow-xl shadow-blue-900/5 relative overflow-hidden">
         <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
         <form method="POST" action="{{ route('projects.store') }}" class="space-y-6 relative z-10"
