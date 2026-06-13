@@ -131,7 +131,7 @@
                 <div class="space-y-1">
                     @foreach(array_slice($dayTasks, 0, 3) as $item)
                         <a href="{{ route('tasks.show', ['task' => $item['task']->id, 'source' => 'calendar', 'month' => $month, 'year' => $year]) }}"
-                           title="{{ $item['task']->name }} ({{ $item['task']->project->name ?? 'No Project' }})"
+                           title="{{ $item['task']->name }} ({{ $item['task']->project->name ?? 'No Program' }})"
                            class="cal-event block border transition-all hover:-translate-y-px hover:shadow-md font-semibold
                                   {{ $item['type'] === 'start' ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/50 text-emerald-700 border-emerald-200/60 hover:shadow-emerald-500/10' : 'bg-gradient-to-r from-rose-50 to-rose-100/50 text-rose-700 border-rose-200/60 hover:shadow-rose-500/10' }}">
                             <div class="truncate">{{ $item['task']->name }}</div>

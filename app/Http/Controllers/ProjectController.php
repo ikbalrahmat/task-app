@@ -36,7 +36,7 @@ class ProjectController extends Controller
         $data['created_by'] = $request->user()->id;
         $project = $this->service->create($data);
         ActivityLogger::log('project.created', 'Membuat project baru: ' . $project->name);
-        return redirect()->route('projects.index')->with('success', 'Project berhasil ditambahkan.');
+        return redirect()->route('projects.index')->with('success', 'Program berhasil ditambahkan.');
     }
 
     public function show(int $id)
@@ -59,7 +59,7 @@ class ProjectController extends Controller
         $this->authorize('update', $project);
         $updated = $this->service->update($id, $request->validated());
         ActivityLogger::log('project.updated', 'Memperbarui project: ' . $updated->name);
-        return redirect()->route('projects.index')->with('success', 'Project berhasil diperbarui.');
+        return redirect()->route('projects.index')->with('success', 'Program berhasil diperbarui.');
     }
 
     public function destroy(int $id)
@@ -69,7 +69,7 @@ class ProjectController extends Controller
         $name = $project->name;
         $this->service->delete($id);
         ActivityLogger::log('project.deleted', 'Menghapus project: ' . $name);
-        return redirect()->route('projects.index')->with('success', 'Project berhasil dihapus.');
+        return redirect()->route('projects.index')->with('success', 'Program berhasil dihapus.');
     }
 
     public function convertToSubproject(Request $request, int $id)
@@ -121,6 +121,6 @@ class ProjectController extends Controller
         });
 
         return redirect()->route('projects.show', $targetProjectId)
-            ->with('success', 'Project berhasil diubah menjadi Sub-Project beserta seluruh tugas di dalamnya!');
+            ->with('success', 'Program berhasil diubah menjadi List beserta seluruh tugas di dalamnya!');
     }
 }

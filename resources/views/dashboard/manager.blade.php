@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
 @section('heading', 'Dashboard')
-@section('subheading', 'Ringkasan seluruh aktivitas project')
+@section('subheading', 'Ringkasan seluruh aktivitas program')
 
 @section('content')
 {{-- Year Filter --}}
@@ -30,7 +30,7 @@
             <span class="text-[10px] uppercase tracking-widest text-blue-700 bg-blue-100/50 px-2.5 py-1 rounded-lg font-bold">{{ $year }}</span>
         </div>
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['total_projects'] }}</div>
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Project</div>
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Program</div>
     </div>
     
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
@@ -41,7 +41,7 @@
             <span class="text-[10px] uppercase tracking-widest text-emerald-700 bg-emerald-100/50 px-2.5 py-1 rounded-lg font-bold">Aktif</span>
         </div>
         <div class="text-4xl font-black text-blue-950 mb-1 tracking-tight">{{ $stats['active_projects'] }}</div>
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Project Aktif</div>
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Program Aktif</div>
     </div>
     
     <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-blue-900/10 transition-all hover:-translate-y-1">
@@ -77,7 +77,7 @@
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
                 <div>
                     <h2 class="font-bold text-xl text-blue-950">Progress Tahunan {{ $year }}</h2>
-                    <p class="text-sm text-slate-500 mt-1">Rata-rata progres seluruh project</p>
+                    <p class="text-sm text-slate-500 mt-1">Rata-rata progres seluruh program</p>
                 </div>
                 <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mt-2 sm:mt-0">{{ $stats['year_progress'] }}%</span>
             </div>
@@ -129,7 +129,7 @@
     {{-- Progress Per Project --}}
     <div class="xl:col-span-2 bg-white/80 backdrop-blur-md border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl p-6 sm:p-8">
         <div class="flex items-center justify-between mb-6">
-            <h2 class="font-bold text-lg text-blue-950">Progress Per Project</h2>
+            <h2 class="font-bold text-lg text-blue-950">Progress Per Program</h2>
             <a href="{{ route('projects.index') }}" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-xl font-bold transition-colors">Lihat Semua →</a>
         </div>
         <div class="space-y-6">
@@ -179,7 +179,7 @@
             </div>
             @empty
             <div class="text-center py-10 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-                <p class="text-slate-400 text-sm font-medium">Belum ada project di tahun {{ $year }}.</p>
+                <p class="text-slate-400 text-sm font-medium">Belum ada program di tahun {{ $year }}.</p>
             </div>
             @endforelse
         </div>

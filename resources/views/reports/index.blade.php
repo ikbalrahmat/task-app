@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Laporan Progress')
 @section('heading', 'Laporan')
-@section('subheading', 'Progress report per project dan tahunan')
+@section('subheading', 'Progress report per program dan tahunan')
 
 @push('styles')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,7 +16,7 @@
     </a>
     <a href="{{ route('reports', ['tab' => 'progress', 'year' => $year]) }}"
        class="px-5 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all {{ $tab === 'progress' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10' : 'text-slate-500 hover:text-slate-900' }}">
-        Progress Per Project
+        Progress Per Program
     </a>
     <a href="{{ route('reports', ['tab' => 'annual', 'year' => $year]) }}"
        class="px-5 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all {{ $tab === 'annual' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10' : 'text-slate-500 hover:text-slate-900' }}">
@@ -47,7 +47,7 @@
     @if($projects->isNotEmpty())
     <div class="grid grid-cols-1 mb-6">
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-hidden">
-            <h2 class="font-bold text-slate-800 mb-4">Grafik Progress Project {{ $year }}</h2>
+            <h2 class="font-bold text-slate-800 mb-4">Grafik Progress Program {{ $year }}</h2>
             <div class="overflow-x-auto">
                 <div class="h-64 min-w-[600px]">
                     <canvas id="progressChart"></canvas>
@@ -60,13 +60,13 @@
     {{-- Table --}}
     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
         <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
-            <h2 class="font-bold text-slate-800">Detail Per Project — {{ $year }}</h2>
+            <h2 class="font-bold text-slate-800">Detail Per Program — {{ $year }}</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
                     <tr>
-                        <th class="px-6 py-4 text-left font-semibold">Project</th>
+                        <th class="px-6 py-4 text-left font-semibold">Program</th>
                         <th class="px-6 py-4 text-center font-semibold">Total Task</th>
                         <th class="px-6 py-4 text-center font-semibold">Selesai</th>
                         <th class="px-6 py-4 text-center font-semibold">Berjalan</th>
@@ -108,7 +108,7 @@
                         <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold border {{ $sc }}">{{ $project->status }}</span></td>
                     </tr>
                     @empty
-                    <tr><td colspan="7" class="py-16 text-center text-slate-500 font-medium">Tidak ada project di tahun {{ $year }}.</td></tr>
+                    <tr><td colspan="7" class="py-16 text-center text-slate-500 font-medium">Tidak ada program di tahun {{ $year }}.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -133,7 +133,7 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <h3 class="font-bold text-slate-800 text-lg mb-4">{{ $y }}</h3>
             <div class="space-y-3 text-sm">
-                <div class="flex justify-between"><span class="text-slate-500">Total Project</span><span class="font-bold text-slate-800">{{ $stats['total_projects'] }}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Total Program</span><span class="font-bold text-slate-800">{{ $stats['total_projects'] }}</span></div>
                 <div class="flex justify-between"><span class="text-slate-500">Total Task</span><span class="font-bold text-slate-800">{{ $stats['total_tasks'] }}</span></div>
                 <div class="flex justify-between"><span class="text-slate-500">Selesai</span><span class="font-bold text-green-600">{{ $stats['done_tasks'] }}</span></div>
                 <div class="flex justify-between"><span class="text-slate-500">Overdue</span><span class="font-bold text-red-600">{{ $stats['overdue_count'] }}</span></div>
@@ -172,8 +172,8 @@
             <label class="text-sm text-slate-500 font-medium">Level:</label>
             <select id="levelFilter" onchange="filterChart()"
                     class="bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                <option value="Project">Project</option>
-                <option value="Subproject">Sub-Project</option>
+                <option value="Project">Program</option>
+                <option value="Subproject">List</option>
                 <option value="Task">Task</option>
             </select>
         </div>
@@ -182,7 +182,7 @@
     <div class="grid grid-cols-1 gap-6 mb-6">
         {{-- Chart Kesesuaian Jadwal (4 Batang) --}}
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-hidden">
-            <h2 class="font-bold text-slate-800 mb-2" id="chartTitle">Kesesuaian Jadwal (Level Project)</h2>
+            <h2 class="font-bold text-slate-800 mb-2" id="chartTitle">Kesesuaian Jadwal (Level Program)</h2>
             <p class="text-sm text-slate-500 mb-6">Visualisasi Perbandingan Rencana vs Realisasi Tanggal Mulai dan Selesai.</p>
             <div class="overflow-x-auto">
                 <div class="h-96 min-w-full" id="chartContainer">

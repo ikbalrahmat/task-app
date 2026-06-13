@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Daftar Project')
-@section('heading', 'Project')
-@section('subheading', 'Kelola seluruh project organisasi')
+@section('title', 'Daftar Program')
+@section('heading', 'Program')
+@section('subheading', 'Kelola seluruh program organisasi')
 
 @section('content')
 {{-- Header Actions --}}
@@ -11,7 +11,7 @@
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
-            <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Cari project..."
+            <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Cari program..."
                    class="w-full sm:w-auto bg-white/80 backdrop-blur-md border border-white/60 text-slate-900 placeholder-slate-400 rounded-2xl pl-10 pr-4 py-2.5 text-sm shadow-sm shadow-blue-900/5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all min-w-[240px]">
         </div>
         
@@ -52,7 +52,7 @@
     <a href="{{ route('projects.create') }}"
        class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-6 py-2.5 rounded-2xl text-sm shadow-lg shadow-blue-900/20 transition-all hover:-translate-y-0.5 flex items-center gap-2 shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Tambah Project
+        Tambah Program
     </a>
     @endcan
 </div>
@@ -62,18 +62,18 @@
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="bg-slate-50/50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-100">
-                    <th class="px-6 py-5 text-left font-bold">Nama Project</th>
-                    <th class="px-6 py-5 text-left font-bold">Tahun</th>
-                    <th class="px-6 py-5 text-left font-bold">Status</th>
-                    <th class="px-6 py-5 text-left font-bold">Periode</th>
-                    <th class="px-6 py-5 text-left font-bold">Progress</th>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200 divide-x divide-slate-200">
+                    <th class="px-6 py-5 text-center font-bold">Nama Program</th>
+                    <th class="px-6 py-5 text-center font-bold">Tahun</th>
+                    <th class="px-6 py-5 text-center font-bold">Status</th>
+                    <th class="px-6 py-5 text-center font-bold">Periode</th>
+                    <th class="px-6 py-5 text-center font-bold">Progress</th>
                     <th class="px-6 py-5 text-center font-bold">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100/80">
+            <tbody class="divide-y divide-slate-100">
                 @forelse($projects as $project)
-                <tr class="hover:bg-blue-50/30 transition-colors group">
+                <tr class="hover:bg-slate-50 transition-colors group divide-x divide-slate-100">
                     <td class="px-6 py-5">
                         <a href="{{ route('projects.show', $project->id) }}" class="font-bold text-slate-800 group-hover:text-blue-600 transition-colors text-base block mb-0.5">
                             {{ $project->name }}
@@ -85,10 +85,10 @@
                             <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md font-semibold shrink-0">{{ $project->subprojects->count() }} Sub</span>
                         </div>
                     </td>
-                    <td class="px-6 py-5">
+                    <td class="px-6 py-5 text-center">
                         <span class="font-bold text-slate-700">{{ $project->year }}</span>
                     </td>
-                    <td class="px-6 py-5">
+                    <td class="px-6 py-5 text-center">
                         @php
                             $sc = match($project->status) {
                                 'Berjalan'   => 'bg-blue-100/50 text-blue-700 border-blue-200/50',
@@ -101,14 +101,14 @@
                             {{ $project->status }}
                         </span>
                     </td>
-                    <td class="px-6 py-5 text-slate-500 text-xs font-medium">
-                        <div class="flex flex-col gap-1">
+                    <td class="px-6 py-5 text-center text-slate-500 text-xs font-medium">
+                        <div class="flex flex-col items-center gap-1">
                             <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> {{ $project->start_date?->format('d M Y') ?? '-' }}</span>
                             <span class="flex items-center gap-1 text-slate-400"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg> {{ $project->end_date?->format('d M Y') ?? '-' }}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-5 min-w-[140px]">
-                        <div class="flex items-center gap-3">
+                    <td class="px-6 py-5 min-w-[140px] text-center">
+                        <div class="flex items-center justify-center gap-3">
                             <div class="flex-1 bg-slate-100 rounded-full h-2 shadow-inner">
                                 @php 
                                     $prog = $project->progress;
@@ -133,7 +133,7 @@
                             @endcan
                             @can('delete', $project)
                             <form method="POST" action="{{ route('projects.destroy', $project->id) }}"
-                                  onsubmit="return confirm('Hapus project {{ $project->name }}? Semua task terkait juga akan dihapus.')">
+                                  onsubmit="return confirm('Hapus program {{ $project->name }}? Semua task terkait juga akan dihapus.')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 rounded-xl transition-all shadow-sm" title="Hapus">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -147,8 +147,8 @@
                 <tr>
                     <td colspan="6" class="px-6 py-20 text-center">
                         <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-inner">📁</div>
-                        <div class="font-bold text-slate-800 text-lg mb-1">Belum ada project</div>
-                        <div class="text-sm text-slate-400">Tambahkan project pertama Anda untuk memulai kolaborasi.</div>
+                        <div class="font-bold text-slate-800 text-lg mb-1">Belum ada program</div>
+                        <div class="text-sm text-slate-400">Tambahkan program pertama Anda untuk memulai kolaborasi.</div>
                     </td>
                 </tr>
                 @endforelse

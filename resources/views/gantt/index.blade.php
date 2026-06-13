@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Gantt Chart')
 @section('heading', 'Gantt Chart')
-@section('subheading', 'Visualisasi timeline project dan task')
+@section('subheading', 'Visualisasi timeline program dan task')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css">
@@ -57,15 +57,15 @@
 @if($projects->isEmpty())
     <div class="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm">
         <div class="text-4xl mb-3">📉</div>
-        <div class="font-bold text-slate-800 mb-1">Belum ada project di tahun {{ $year }}</div>
-        <p class="text-sm text-slate-500">Tambahkan project terlebih dahulu.</p>
+        <div class="font-bold text-slate-800 mb-1">Belum ada program di tahun {{ $year }}</div>
+        <p class="text-sm text-slate-500">Tambahkan program terlebih dahulu.</p>
     </div>
 @else
     <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
         <div id="gantt-container"></div>
     </div>
 
-    {{-- Project summary --}}
+    {{-- Program summary --}}
     <div class="mt-6 space-y-3">
         @foreach($projects as $project)
         @if($project->tasks->count())

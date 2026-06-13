@@ -62,14 +62,14 @@
             
             <div class="space-y-4 text-sm font-medium">
                 <div class="flex justify-between items-center py-2 border-b border-slate-100/80">
-                    <span class="text-slate-500">Project</span>
+                    <span class="text-slate-500">Program</span>
                     <a href="{{ route('projects.show', $task->project_id) }}" class="text-blue-600 hover:text-blue-700 font-bold max-w-[150px] truncate bg-blue-50 px-2.5 py-1 rounded-lg">
                         {{ $task->project->name ?? '-' }}
                     </a>
                 </div>
                 @if($task->subproject)
                 <div class="flex justify-between items-center py-2 border-b border-slate-100/80">
-                    <span class="text-slate-500">Sub-Project</span>
+                    <span class="text-slate-500">List</span>
                     <span class="text-slate-700 font-bold max-w-[150px] truncate" title="{{ $task->subproject->name }}">
                         {{ $task->subproject->name }}
                     </span>

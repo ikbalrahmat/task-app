@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Tambah Project')
-@section('heading', 'Tambah Project')
-@section('subheading', 'Buat project baru')
+@section('title', 'Tambah Program')
+@section('heading', 'Tambah Program')
+@section('subheading', 'Buat program baru')
 
 @section('content')
 <div class="max-w-3xl mx-auto">
@@ -23,7 +23,7 @@
             @csrf
 
             <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Project <span class="text-rose-500">*</span></label>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Program <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name') }}" required
                        class="w-full bg-white/50 border @error('name') border-rose-400 focus:border-rose-500 focus:ring-rose-500/20 @else border-slate-200/60 focus:border-blue-500 focus:ring-blue-500/20 @enderror text-slate-900 placeholder-slate-400 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:bg-white transition-all shadow-sm"
                        placeholder="Misal: Redesain UI Taskflow">
@@ -87,13 +87,13 @@
 
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Deskripsi</label>
-                <textarea name="description" rows="4" placeholder="Tuliskan deskripsi lengkap project di sini..."
+                <textarea name="description" rows="4" placeholder="Tuliskan deskripsi lengkap program di sini..."
                           class="w-full bg-white/50 border border-slate-200/60 text-slate-900 placeholder-slate-400 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white resize-none transition-all shadow-sm">{{ old('description') }}</textarea>
             </div>
 
             <div class="flex items-center gap-4 pt-4 border-t border-slate-100/80">
                 <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-3.5 rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-lg shadow-blue-900/20">
-                    Simpan Project
+                    Simpan Program
                 </button>
                 <a href="{{ route('projects.index') }}" class="bg-slate-50 border border-slate-200/60 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold px-8 py-3.5 rounded-2xl text-sm transition-all">
                     Batal

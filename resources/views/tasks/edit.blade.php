@@ -4,7 +4,7 @@
 @section('subheading', 'Perbarui informasi task')
 
 @section('content')
-<div class="max-w-2xl">
+<div class="max-w-2xl mx-auto">
     <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
         <form method="POST" action="{{ route('tasks.update', $task->id) }}" class="space-y-5">
             @csrf @method('PUT')
@@ -15,7 +15,7 @@
                 subprojectsByProject: {{ json_encode($projects->mapWithKeys(fn($p) => [$p->id => $p->subprojects->map(fn($sp) => ['id' => $sp->id, 'name' => $sp->name])])->toArray()) }}
             }" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Project <span class="text-red-600">*</span></label>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Program <span class="text-red-600">*</span></label>
                     <select name="project_id" required x-model="selectedProject" @change="selectedSubproject = ''" @if(!auth()->user()->hasCrudAccess()) disabled @endif
                             class="w-full border border-slate-200 text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors @if(!auth()->user()->hasCrudAccess()) bg-slate-50 text-slate-500 @else bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 @endif">
                         @foreach($projects as $project)
@@ -33,10 +33,10 @@
                      x-transition:enter-end="opacity-100 translate-y-0"
                      class="space-y-2"
                      style="display: none;">
-                    <label class="block text-sm font-medium text-slate-700">Sub-Project (Opsional)</label>
+                    <label class="block text-sm font-medium text-slate-700">List (Opsional)</label>
                     <select name="subproject_id" x-model="selectedSubproject" @if(!auth()->user()->hasCrudAccess()) disabled @endif
                             class="w-full border border-slate-200 text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors @if(!auth()->user()->hasCrudAccess()) bg-slate-50 text-slate-500 @else bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 @endif">
-                        <option value="">-- Tugas Langsung (Tidak masuk Sub-Project) --</option>
+                        <option value="">-- Tugas Langsung (Tidak masuk List) --</option>
                         <template x-for="sub in subprojectsByProject[selectedProject]" :key="sub.id">
                             <option :value="sub.id" x-text="sub.name" :selected="selectedSubproject == sub.id"></option>
                         </template>

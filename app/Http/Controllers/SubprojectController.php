@@ -58,7 +58,7 @@ class SubprojectController extends Controller
         $subproject = Subproject::create($data);
 
         return redirect()->route('projects.show', $subproject->project_id)
-            ->with('success', 'Sub-project berhasil dibuat.');
+            ->with('success', 'List berhasil dibuat.');
     }
 
     public function edit(Subproject $subproject)
@@ -93,7 +93,7 @@ class SubprojectController extends Controller
         }
 
         return redirect()->route('projects.show', $subproject->project_id)
-            ->with('success', 'Sub-project berhasil diperbarui.');
+            ->with('success', 'List berhasil diperbarui.');
     }
 
     public function destroy(Subproject $subproject)
@@ -105,6 +105,6 @@ class SubprojectController extends Controller
         $subproject->delete();
 
         return redirect()->route('projects.show', $projectId)
-            ->with('success', 'Sub-project berhasil dihapus.');
+            ->with('success', 'List berhasil dihapus.');
     }
 }

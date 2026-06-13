@@ -13,10 +13,7 @@
             <a href="{{ route('activity-log.index') }}" class="text-xs text-blue-600 hover:underline">Reset</a>
         @endif
     </form>
-    <a href="{{ route('users.index') }}"
-       class="bg-slate-100 border border-slate-200 text-slate-800 px-5 py-2.5 rounded-xl text-sm hover:bg-slate-200 transition-colors shrink-0 shadow-sm">
-        ← Kembali ke Pengguna
-    </a>
+
 </div>
 
 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">

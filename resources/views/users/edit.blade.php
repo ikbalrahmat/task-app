@@ -4,7 +4,7 @@
 @section('subheading', 'Perbarui informasi pengguna')
 
 @section('content')
-<div class="max-w-lg">
+<div class="max-w-lg mx-auto">
     <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
         <form method="POST" action="{{ route('users.update', $user->id) }}" class="space-y-5">
             @csrf @method('PUT')

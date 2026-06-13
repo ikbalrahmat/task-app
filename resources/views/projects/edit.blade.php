@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Edit Project')
-@section('heading', 'Edit Project')
-@section('subheading', 'Perbarui informasi project')
+@section('title', 'Edit Program')
+@section('heading', 'Edit Program')
+@section('subheading', 'Perbarui informasi program')
 
 @section('content')
 <div class="max-w-3xl mx-auto">
@@ -24,7 +24,7 @@
             @method('PUT')
 
             <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Project <span class="text-rose-500">*</span></label>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Program <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $project->name) }}" required
                        class="w-full bg-white/50 border @error('name') border-rose-400 focus:border-rose-500 focus:ring-rose-500/20 @else border-slate-200/60 focus:border-blue-500 focus:ring-blue-500/20 @enderror text-slate-900 placeholder-slate-400 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:bg-white transition-all shadow-sm">
                 @error('name')<p class="text-rose-500 text-xs font-semibold mt-1.5">{{ $message }}</p>@enderror
@@ -93,7 +93,7 @@
 
             <div class="flex items-center gap-4 pt-4 border-t border-slate-100/80">
                 <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-3.5 rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-lg shadow-blue-900/20">
-                    Perbarui Project
+                    Perbarui Program
                 </button>
                 <a href="{{ route('projects.show', $project->id) }}" class="bg-slate-50 border border-slate-200/60 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold px-8 py-3.5 rounded-2xl text-sm transition-all">
                     Batal
@@ -102,24 +102,24 @@
         </form>
     </div>
 
-    {{-- Card: Convert to Sub-Project --}}
+    {{-- Card: Convert to List --}}
     @if(auth()->user()->isAdminOrManager())
     <div class="mt-8 bg-white/80 backdrop-blur-md border border-rose-100/50 rounded-3xl p-8 shadow-xl shadow-rose-900/5 relative overflow-hidden">
         <div class="absolute -right-10 -top-10 w-40 h-40 bg-rose-500/5 rounded-full blur-3xl pointer-events-none"></div>
-        <h3 class="text-lg font-black text-rose-700 mb-2 relative z-10">⚠️ Ubah Menjadi Sub-Project</h3>
+        <h3 class="text-lg font-black text-rose-700 mb-2 relative z-10">⚠️ Ubah Menjadi List</h3>
         <p class="text-sm text-slate-500 mb-6 leading-relaxed relative z-10">
-            Ingin mengubah Project ini menjadi Sub-Project dari Project lain? Seluruh tugas (Tasks) dan sub-project di dalam Project ini akan secara otomatis dipindahkan ke bawah Project induk yang baru. Setelah pemindahan selesai, Project ini akan dihapus secara otomatis.
+            Ingin mengubah Program ini menjadi List dari Program lain? Seluruh tugas (Tasks) dan list di dalam Program ini akan secara otomatis dipindahkan ke bawah Program induk yang baru. Setelah pemindahan selesai, Program ini akan dihapus secara otomatis.
         </p>
         
-        <form method="POST" action="{{ route('projects.convert', $project->id) }}" class="space-y-5 relative z-10" onsubmit="return confirm('Apakah Anda yakin ingin mengubah project ini menjadi sub-project? Project ini akan dihapus setelah seluruh tugasnya dipindahkan.')">
+        <form method="POST" action="{{ route('projects.convert', $project->id) }}" class="space-y-5 relative z-10" onsubmit="return confirm('Apakah Anda yakin ingin mengubah program ini menjadi list? Program ini akan dihapus setelah seluruh tugasnya dipindahkan.')">
             @csrf
             
             <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Project Induk Baru</label>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Program Induk Baru</label>
                 <div class="relative">
                     <select name="target_project_id" required
                             class="w-full appearance-none bg-white/50 border border-slate-200/60 text-slate-900 font-semibold rounded-2xl pl-4 pr-10 py-3.5 text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-400/20 focus:bg-white transition-all shadow-sm cursor-pointer">
-                        <option value="">-- Pilih Project Sasaran --</option>
+                        <option value="">-- Pilih Program Sasaran --</option>
                         @foreach(\App\Models\Project::where('id', '!=', $project->id)->orderBy('name')->get() as $p)
                             <option value="{{ $p->id }}">{{ $p->name }}</option>
                         @endforeach

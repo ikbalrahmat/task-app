@@ -17,10 +17,7 @@
         <button type="submit" class="bg-slate-100 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-xl text-sm hover:bg-slate-200 transition-colors">Filter</button>
     </form>
     <div class="flex gap-2">
-        <a href="{{ route('activity-log.index') }}"
-           class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all hover:-translate-y-0.5 shrink-0 shadow-sm hover:shadow-md">
-            📋 Log Aktivitas Audit
-        </a>
+
         <a href="{{ route('users.create') }}"
            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all hover:-translate-y-0.5 shrink-0 shadow-sm hover:shadow-md">
             + Tambah Pengguna
@@ -32,19 +29,19 @@
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
-                    <th class="px-6 py-4 text-left font-semibold">Pengguna</th>
-                    <th class="px-6 py-4 text-left font-semibold">Email</th>
-                    <th class="px-6 py-4 text-left font-semibold">Role</th>
-                    <th class="px-6 py-4 text-left font-semibold">Status</th>
-                    <th class="px-6 py-4 text-left font-semibold">Departemen</th>
-                    <th class="px-6 py-4 text-left font-semibold">Bergabung</th>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200 divide-x divide-slate-200">
+                    <th class="px-6 py-4 text-center font-semibold">Pengguna</th>
+                    <th class="px-6 py-4 text-center font-semibold">Email</th>
+                    <th class="px-6 py-4 text-center font-semibold">Role</th>
+                    <th class="px-6 py-4 text-center font-semibold">Status</th>
+                    <th class="px-6 py-4 text-center font-semibold">Departemen</th>
+                    <th class="px-6 py-4 text-center font-semibold">Bergabung</th>
                     <th class="px-6 py-4 text-center font-semibold">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse($users as $user)
-                <tr class="hover:bg-slate-50 transition-colors">
+                <tr class="hover:bg-slate-50 transition-colors divide-x divide-slate-100">
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0
@@ -62,7 +59,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 text-slate-500">{{ $user->email }}</td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 text-center">
                         @php
                             $rc = match($user->role) {
                                 'Admin'             => 'bg-purple-50 text-purple-600 border-purple-100',
@@ -74,31 +71,43 @@
                         @endphp
                         <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border {{ $rc }}">{{ $user->role }}</span>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 text-center">
                         @if($user->is_locked)
-                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border bg-red-50 text-red-600 border-red-100">🔒 Terkunci</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border bg-red-50 text-red-600 border-red-100">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                Terkunci
+                            </span>
                         @else
-                            <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-600 border-emerald-100">🔓 Aktif</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-600 border-emerald-100">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                                Aktif
+                            </span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-slate-500 text-sm">{{ $user->department ?? '-' }}</td>
-                    <td class="px-6 py-4 text-slate-500 text-xs">{{ $user->created_at?->format('d M Y') }}</td>
+                    <td class="px-6 py-4 text-center text-slate-500 text-sm">{{ $user->department ?? '-' }}</td>
+                    <td class="px-6 py-4 text-center text-slate-500 text-xs">{{ $user->created_at?->format('d M Y') }}</td>
                     <td class="px-6 py-4">
-                        <div class="flex items-center justify-center gap-1">
+                        <div class="flex items-center justify-center gap-1.5">
                             @if($user->is_locked)
                                 <form method="POST" action="{{ route('users.unlock', $user->id) }}"
                                       onsubmit="return confirm('Buka kunci akun {{ $user->name }}?')">
                                     @csrf
-                                    <button type="submit" class="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors" title="Buka Kunci Akun">🔓 Buka Kunci</button>
+                                    <button type="submit" class="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-100 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-100 rounded-xl transition-all shadow-sm" title="Buka Kunci Akun">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                                    </button>
                                 </form>
                             @endif
                             <a href="{{ route('users.edit', $user->id) }}"
-                               class="p-2 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">✏️</a>
+                               class="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-500 hover:text-amber-600 hover:bg-amber-50 hover:border-amber-100 rounded-xl transition-all shadow-sm" title="Edit">
+                               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>   
+                            </a>
                             @if($user->id !== auth()->id())
                             <form method="POST" action="{{ route('users.destroy', $user->id) }}"
                                   onsubmit="return confirm('Hapus pengguna {{ $user->name }}?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">🗑</button>
+                                <button type="submit" class="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 rounded-xl transition-all shadow-sm" title="Hapus">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
                             </form>
                             @endif
                         </div>

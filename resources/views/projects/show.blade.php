@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $project->name)
 @section('heading', $project->name)
-@section('subheading', 'Detail project & daftar task')
+@section('subheading', 'Detail program & daftar task')
 
 @section('content')
 <div class="flex flex-wrap items-center gap-4 mb-8">
@@ -18,7 +18,7 @@
     @endcan
     
     @can('delete', $project)
-    <form method="POST" action="{{ route('projects.destroy', $project->id) }}" onsubmit="return confirm('Hapus project ini? Semua task terkait akan ikut dihapus.')" class="ml-auto">
+    <form method="POST" action="{{ route('projects.destroy', $project->id) }}" onsubmit="return confirm('Hapus program ini? Semua task terkait akan ikut dihapus.')" class="ml-auto">
         @csrf @method('DELETE')
         <button type="submit" class="bg-rose-100/50 hover:bg-rose-100 text-rose-700 border border-rose-200/60 font-bold px-5 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -38,7 +38,7 @@
         <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-7 shadow-xl shadow-blue-900/5 relative overflow-hidden">
             <h2 class="font-black text-slate-800 mb-6 text-lg flex items-center gap-2">
                 <span class="p-1.5 rounded-lg bg-blue-100 text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg></span>
-                Informasi Project
+                Informasi Program
             </h2>
             
             <div class="space-y-4 text-sm font-medium">
@@ -154,15 +154,15 @@
                 <div>
                     <h2 class="font-black text-slate-800 text-lg flex items-center gap-2 mb-1">
                         <span class="p-1.5 rounded-lg bg-indigo-100 text-indigo-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span>
-                        Sub-Project
+                        List
                     </h2>
-                    <p class="text-sm text-slate-500 font-medium">Kelola grup tugas besar dalam project ini</p>
+                    <p class="text-sm text-slate-500 font-medium">Kelola grup tugas besar dalam program ini</p>
                 </div>
                 @if(auth()->user()->isAdminOrManager())
                 <a href="{{ route('subprojects.create', ['project_id' => $project->id]) }}"
                    class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md shadow-blue-600/20 flex items-center gap-2 shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Tambah Sub-Project
+                    Tambah List
                 </a>
                 @endif
             </div>
@@ -197,13 +197,13 @@
                             <!-- Subproject Actions -->
                             @if(auth()->user()->isAdminOrManager())
                             <div class="flex items-center gap-1 shrink-0">
-                                <a href="{{ route('subprojects.edit', $subproject->id) }}" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors" title="Edit Sub-Project">
+                                <a href="{{ route('subprojects.edit', $subproject->id) }}" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors" title="Edit List">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                 </a>
                                 <form method="POST" action="{{ route('subprojects.destroy', $subproject->id) }}"
-                                      onsubmit="return confirm('Hapus sub-project {{ $subproject->name }}? Task di dalamnya tidak akan terhapus tapi dipindahkan ke tugas langsung.')" class="inline">
+                                      onsubmit="return confirm('Hapus list {{ $subproject->name }}? Task di dalamnya tidak akan terhapus tapi dipindahkan ke tugas langsung.')" class="inline">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer" title="Hapus Sub-Project">
+                                    <button type="submit" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer" title="Hapus List">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </form>
@@ -230,15 +230,15 @@
             <div>
                 <h2 class="font-black text-slate-800 text-lg flex items-center gap-2 mb-1">
                     <span class="p-1.5 rounded-lg bg-indigo-100 text-indigo-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span>
-                    Sub-Project
+                    List
                 </h2>
-                <p class="text-sm text-slate-500 font-medium">Belum ada sub-project di dalam project ini.</p>
+                <p class="text-sm text-slate-500 font-medium">Belum ada list di dalam program ini.</p>
             </div>
             @if(auth()->user()->isAdminOrManager())
             <a href="{{ route('subprojects.create', ['project_id' => $project->id]) }}"
                class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Buat Sub-Project
+                Buat List
             </a>
             @endif
         </div>
@@ -252,7 +252,7 @@
                         <span class="p-1.5 rounded-lg bg-emerald-100 text-emerald-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></span>
                         Tugas Langsung
                     </h2>
-                    <p class="text-sm text-slate-500 font-medium">Task yang tidak termasuk dalam sub-project manapun</p>
+                    <p class="text-sm text-slate-500 font-medium">Task yang tidak termasuk dalam list manapun</p>
                 </div>
                 @can('create', \App\Models\Task::class)
                 <a href="{{ route('tasks.create', ['project_id' => $project->id]) }}"
@@ -307,7 +307,7 @@
                         <div class="px-6 py-12 text-center bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed">
                             <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm border border-slate-100">📋</div>
                             <p class="font-bold text-slate-700 mb-1 text-base">Belum ada tugas langsung</p>
-                            <p class="text-sm font-medium text-slate-500">Semua task saat ini tergabung di dalam Sub-Project.</p>
+                            <p class="text-sm font-medium text-slate-500">Semua task saat ini tergabung di dalam List.</p>
                         </div>
                     @endforelse
                 </div>

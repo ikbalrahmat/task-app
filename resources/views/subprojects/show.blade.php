@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $subproject->name)
 @section('heading', $subproject->name)
-@section('subheading', 'Detail sub-project & daftar task')
+@section('subheading', 'Detail list & daftar task')
 
 @section('content')
 <div class="flex flex-wrap items-center gap-4 mb-8">
@@ -16,7 +16,7 @@
         Edit
     </a>
     
-    <form method="POST" action="{{ route('subprojects.destroy', $subproject->id) }}" onsubmit="return confirm('Hapus sub-project ini? Task di dalamnya tidak akan terhapus tapi dipindahkan ke project induk.')" class="ml-auto">
+    <form method="POST" action="{{ route('subprojects.destroy', $subproject->id) }}" onsubmit="return confirm('Hapus list ini? Task di dalamnya tidak akan terhapus tapi dipindahkan ke program induk.')" class="ml-auto">
         @csrf @method('DELETE')
         <button type="submit" class="bg-rose-100/50 hover:bg-rose-100 text-rose-700 border border-rose-200/60 font-bold px-5 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -37,12 +37,12 @@
         <div class="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-7 shadow-xl shadow-blue-900/5 relative overflow-hidden">
             <h2 class="font-black text-slate-800 mb-6 text-lg flex items-center gap-2">
                 <span class="p-1.5 rounded-lg bg-blue-100 text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
-                Informasi Sub-Project
+                Informasi List
             </h2>
             
             <div class="space-y-4 text-sm font-medium">
                 <div class="flex justify-between items-center py-2 border-b border-slate-100/80">
-                    <span class="text-slate-500">Project Induk</span>
+                    <span class="text-slate-500">Program Induk</span>
                     <a href="{{ route('projects.show', $subproject->project_id) }}" class="text-blue-600 hover:text-blue-700 font-bold max-w-[150px] truncate bg-blue-50 px-2.5 py-1 rounded-lg">
                         {{ $subproject->project->name ?? '-' }}
                     </a>
@@ -153,9 +153,9 @@
                 <div>
                     <h2 class="font-black text-slate-800 text-lg flex items-center gap-2 mb-1">
                         <span class="p-1.5 rounded-lg bg-emerald-100 text-emerald-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></span>
-                        Daftar Task Sub-Project
+                        Daftar Task List
                     </h2>
-                    <p class="text-sm text-slate-500 font-medium">Kelola dan pantau seluruh task di sub-project ini</p>
+                    <p class="text-sm text-slate-500 font-medium">Kelola dan pantau seluruh task di list ini</p>
                 </div>
                 @can('create', \App\Models\Task::class)
                 <a href="{{ route('tasks.create', ['project_id' => $subproject->project_id, 'subproject_id' => $subproject->id]) }}"
@@ -211,7 +211,7 @@
                         <div class="px-6 py-16 text-center bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed">
                             <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm border border-slate-100">📝</div>
                             <p class="font-bold text-slate-700 mb-1 text-base">Belum ada task sama sekali</p>
-                            <p class="text-sm font-medium text-slate-500">Klik tombol "Tambah Task" untuk memecah sub-project ini menjadi langkah-langkah kecil.</p>
+                            <p class="text-sm font-medium text-slate-500">Klik tombol "Tambah Task" untuk memecah list ini menjadi langkah-langkah kecil.</p>
                         </div>
                     @endforelse
                 </div>
