@@ -56,7 +56,9 @@
 
 @if($projects->isEmpty())
     <div class="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm">
-        <div class="text-4xl mb-3">📉</div>
+        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-inner text-indigo-500">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
         <div class="font-bold text-slate-800 mb-1">Belum ada program di tahun {{ $year }}</div>
         <p class="text-sm text-slate-500">Tambahkan program terlebih dahulu.</p>
     </div>

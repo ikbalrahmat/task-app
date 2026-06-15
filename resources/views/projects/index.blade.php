@@ -146,7 +146,9 @@
                 @empty
                 <tr>
                     <td colspan="6" class="px-6 py-20 text-center">
-                        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-inner">📁</div>
+                        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-inner text-blue-500">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                        </div>
                         <div class="font-bold text-slate-800 text-lg mb-1">Belum ada program</div>
                         <div class="text-sm text-slate-400">Tambahkan program pertama Anda untuk memulai kolaborasi.</div>
                     </td>

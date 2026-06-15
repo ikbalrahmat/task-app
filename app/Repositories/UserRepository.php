@@ -51,6 +51,13 @@ class UserRepository implements UserRepositoryInterface
         if (!empty($filters['role'])) {
             $query->where('role', $filters['role']);
         }
+        if (!empty($filters['exclude_role'])) {
+            if (is_array($filters['exclude_role'])) {
+                $query->whereNotIn('role', $filters['exclude_role']);
+            } else {
+                $query->where('role', '!=', $filters['exclude_role']);
+            }
+        }
         return $query->orderBy('name');
     }
 }

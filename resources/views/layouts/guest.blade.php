@@ -46,7 +46,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 60px 50px;
+            padding: 30px 40px;
             background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
             position: relative;
             z-index: 5;
@@ -70,7 +70,7 @@
             width: 100%;
             max-width: 380px;
             background: white;
-            padding: 45px;
+            padding: 35px;
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(30, 58, 138, 0.12);
             position: relative;
@@ -128,7 +128,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 42px;
             margin: 0 auto 30px;
             box-shadow: 0 20px 50px rgba(37, 99, 235, 0.3);
         }
@@ -180,7 +179,7 @@
         }
 
         .form-header {
-            margin-bottom: 40px;
+            margin-bottom: 24px;
         }
 
         .form-header h2 {
@@ -199,7 +198,7 @@
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
@@ -438,22 +437,30 @@
         {{-- Sidebar --}}
         <div class="auth-sidebar">
             <div class="sidebar-content">
-                <div class="logo-icon">🔒</div>
-                <h1>Sistem Informasi</h1>
-                <p>Akses masuk terpusat untuk portal layanan terintegrasi.</p>
+                <div class="logo-icon">
+                    <svg style="width: 42px; height: 42px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
+                <h1>Portal AOPTI</h1>
+                <p>Platform manajemen project terpadu untuk efisiensi dan kolaborasi tim yang lebih baik.</p>
 
                 <div class="feature-list">
                     <div class="feature-item">
-                        <span>✓</span>
-                        <div>Keamanan Akses Terjamin</div>
+                        <span>
+                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        </span>
+                        <div>Manajemen Program & List</div>
                     </div>
                     <div class="feature-item">
-                        <span>✓</span>
-                        <div>Pemantauan Aktivitas Audit</div>
+                        <span>
+                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        </span>
+                        <div>Kolaborasi Tim & Delegasi Task</div>
                     </div>
                     <div class="feature-item">
-                        <span>✓</span>
-                        <div>Otentikasi & Otorisasi Ketat</div>
+                        <span>
+                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        </span>
+                        <div>Pantau Progress secara Real-time</div>
                     </div>
                 </div>
             </div>

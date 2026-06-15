@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>TaskFlow — @yield('title', 'Dashboard')</title>
+    <title>Portal AOPTI — @yield('title', 'Dashboard')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -135,7 +135,7 @@
         </main>
 
         <footer class="py-4 px-8 border-t border-[#e0e7ff] text-center text-xs text-[#1e3a8a]/50">
-            TaskFlow &copy; {{ date('Y') }} — Sistem Manajemen Project
+            Portal AOPTI &copy; {{ date('Y') }} — Sistem Manajemen Project
         </footer>
     </div>
 </div>

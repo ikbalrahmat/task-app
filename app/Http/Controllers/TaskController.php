@@ -25,7 +25,7 @@ class TaskController extends Controller
         $filters = $request->only(['search', 'project_id', 'pic_id', 'status', 'sort', 'dir']);
         $tasks = $this->taskService->paginate(15, $filters);
         $projects = $this->projectService->all();
-        $users = $this->userService->all();
+        $users = $this->userService->all(['exclude_role' => 'Admin']);
         return view('tasks.index', compact('tasks', 'projects', 'users', 'filters'));
     }
 
@@ -33,7 +33,7 @@ class TaskController extends Controller
     {
         $this->authorize('create', Task::class);
         $projects = $this->projectService->all();
-        $users = $this->userService->all();
+        $users = $this->userService->all(['exclude_role' => 'Admin']);
         return view('tasks.create', compact('projects', 'users'));
     }
 
@@ -59,7 +59,7 @@ class TaskController extends Controller
         $task = $this->taskService->find($id);
         $this->authorize('update', $task);
         $projects = $this->projectService->all();
-        $users = $this->userService->all();
+        $users = $this->userService->all(['exclude_role' => 'Admin']);
         return view('tasks.edit', compact('task', 'projects', 'users'));
     }
 

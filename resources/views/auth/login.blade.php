@@ -9,21 +9,30 @@
 </div>
 
 {{-- Security Warning Banner (Requirement 5) --}}
+{{-- 
 <div class="alert alert-error" style="background: #fffbeb; border: 1px solid #fef3c7; color: #b45309; padding: 14px; border-radius: 10px; font-size: 12px; margin-bottom: 24px; line-height: 1.6; display: block;">
-    <div style="font-weight: 700; margin-bottom: 4px; font-size: 13px;">⚠️ PERINGATAN AKSES TERBATAS:</div>
+    <div style="font-weight: 700; margin-bottom: 4px; font-size: 13px; display: flex; align-items: center; gap: 4px;">
+        <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        PERINGATAN AKSES TERBATAS:
+    </div>
     Hanya pengguna yang berwenang yang dapat mengakses sistem ini. Semua aktivitas masuk dan operasional sistem dicatat dan dipantau untuk audit keamanan.
 </div>
+--}}
 
 @if(session('success'))
     <div class="alert alert-success">
-        <div class="alert-icon">✓</div>
+        <div class="alert-icon">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
         <div>{{ session('success') }}</div>
     </div>
 @endif
 
 @if($errors->any())
     <div class="alert alert-error">
-        <div class="alert-icon">!</div>
+        <div class="alert-icon">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
         <div>
             @foreach($errors->all() as $error)
                 <div>{{ $error }}</div>
@@ -43,7 +52,8 @@
                class="@error('email') error @enderror">
         @error('email')
             <div class="error-message">
-                <span>⚠</span> {{ $message }}
+                <svg style="width: 14px; height: 14px; display: inline-block; vertical-align: text-bottom;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                 {{ $message }}
             </div>
         @enderror
     </div>
@@ -62,7 +72,8 @@
         </div>
         @error('password')
             <div class="error-message">
-                <span>⚠</span> {{ $message }}
+                <svg style="width: 14px; height: 14px; display: inline-block; vertical-align: text-bottom;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                 {{ $message }}
             </div>
         @enderror
     </div>
@@ -72,7 +83,8 @@
         <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
         @error('g-recaptcha-response')
             <div class="error-message">
-                <span>⚠</span> {{ $message }}
+                <svg style="width: 14px; height: 14px; display: inline-block; vertical-align: text-bottom;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                 {{ $message }}
             </div>
         @enderror
     </div>

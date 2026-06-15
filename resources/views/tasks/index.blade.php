@@ -71,12 +71,10 @@
                     </td>
                     <td class="px-5 py-4">
                         @if($task->pics->count() === $users->count() && $users->count() > 0)
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-100">
-                                Semua PIC (ALL)
-                            </span>
                             <div class="flex justify-center">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-100">
-                                    Semua PIC (ALL)
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    ALL
                                 </span>
                             </div>
                         @else
@@ -159,7 +157,9 @@
                 @empty
                 <tr>
                     <td colspan="7" class="px-6 py-16 text-center text-slate-500">
-                        <div class="text-4xl mb-3">✅</div>
+                        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-inner text-emerald-500">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
                         <div class="font-semibold text-slate-800 mb-1">Belum ada task</div>
                         <p class="text-sm">Tambahkan task pertama Anda.</p>
                     </td>

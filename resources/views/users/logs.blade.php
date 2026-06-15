@@ -20,18 +20,18 @@
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
-                    <th class="px-6 py-4 text-left font-semibold">Tanggal & Waktu</th>
-                    <th class="px-6 py-4 text-left font-semibold">Pengguna</th>
-                    <th class="px-6 py-4 text-left font-semibold">Tipe Event</th>
-                    <th class="px-6 py-4 text-left font-semibold">Deskripsi</th>
-                    <th class="px-6 py-4 text-left font-semibold">IP Address</th>
-                    <th class="px-6 py-4 text-left font-semibold">Metode & URL</th>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200 divide-x divide-slate-200">
+                    <th class="px-6 py-4 text-center font-semibold">Tanggal & Waktu</th>
+                    <th class="px-6 py-4 text-center font-semibold">Pengguna</th>
+                    <th class="px-6 py-4 text-center font-semibold">Tipe Event</th>
+                    <th class="px-6 py-4 text-center font-semibold">Deskripsi</th>
+                    <th class="px-6 py-4 text-center font-semibold">IP Address</th>
+                    <th class="px-6 py-4 text-center font-semibold">Metode & URL</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse($logs as $log)
-                <tr class="hover:bg-slate-50 transition-colors">
+                <tr class="hover:bg-slate-50 transition-colors divide-x divide-slate-100">
                     <td class="px-6 py-4 text-slate-600 text-xs whitespace-nowrap">
                         {{ $log->created_at?->timezone('Asia/Jakarta')->format('d M Y, H:i:s') }}
                     </td>
@@ -43,7 +43,7 @@
                             <span class="text-slate-400 font-medium italic">Sistem / Tamu</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
                         @php
                             $colorClass = match(true) {
                                 str_contains($log->event_type, 'success') => 'bg-emerald-50 text-emerald-600 border-emerald-100',
@@ -60,18 +60,20 @@
                     <td class="px-6 py-4 text-slate-700 text-sm max-w-xs break-words">
                         {{ $log->description }}
                     </td>
-                    <td class="px-6 py-4 text-slate-500 text-xs whitespace-nowrap">
+                    <td class="px-6 py-4 text-center text-slate-500 text-xs whitespace-nowrap">
                         {{ $log->ip_address }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 text-center">
                         <span class="text-[10px] uppercase font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{{ $log->method }}</span>
-                        <span class="text-slate-600 text-xs truncate block mt-1 max-w-[200px]" title="{{ $log->url }}">{{ $log->url }}</span>
+                        <span class="text-slate-600 text-xs truncate block mt-1 max-w-[200px] mx-auto" title="{{ $log->url }}">{{ $log->url }}</span>
                     </td>
                 </tr>
                 @empty
                 <tr>
                     <td colspan="6" class="py-16 text-center text-slate-500">
-                        <div class="text-4xl mb-3">📋</div>
+                        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-inner text-indigo-500">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                        </div>
                         <p class="font-semibold text-slate-800">Belum ada rekaman audit log.</p>
                     </td>
                 </tr>

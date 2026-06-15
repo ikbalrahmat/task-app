@@ -83,7 +83,7 @@ class Task extends Model
     {
         $start = $this->start_date ? $this->start_date->format('Ymd') : now()->format('Ymd');
         $end   = $this->due_date  ? $this->due_date->copy()->addDay()->format('Ymd') : now()->addDay()->format('Ymd');
-        $title = urlencode('[TaskFlow] ' . $this->name);
+        $title = urlencode('[Portal AOPTI] ' . $this->name);
         $picNames = $this->pics->pluck('name')->join(', ');
         $desc  = urlencode('Project: ' . ($this->project->name ?? '') . ' | PIC: ' . $picNames);
         return "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$title}&dates={$start}/{$end}&details={$desc}";

@@ -119,7 +119,9 @@
                 @empty
                 <tr>
                     <td colspan="7" class="px-6 py-16 text-center text-slate-500">
-                        <div class="text-4xl mb-3">📁</div>
+                        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-inner text-blue-500">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/></svg>
+                        </div>
                         <div class="font-semibold text-slate-800 mb-1">Belum ada list</div>
                         <div class="text-sm">Tambahkan list pertama Anda.</div>
                     </td>
