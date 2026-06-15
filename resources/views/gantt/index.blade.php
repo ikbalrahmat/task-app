@@ -28,138 +28,16 @@
 @endpush
 
 @section('content')
-<div class="flex items-center justify-between mb-6">
-    <form method="GET" class="flex items-center gap-3">
-        <label class="text-sm text-slate-500 font-semibold">Tahun:</label>
-        <select name="year" onchange="this.form.submit()"
-                class="bg-white border border-slate-200 text-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium">
-            @php
-                $availableYears = \App\Models\Project::select('year')->distinct()->pluck('year')->toArray();
-                if (!in_array(date('Y'), $availableYears)) $availableYears[] = date('Y');
-                if (!empty($year) && !in_array($year, $availableYears)) $availableYears[] = $year;
-                rsort($availableYears);
-            @endphp
-            @foreach($availableYears as $y)
-                <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
-            @endforeach
-        </select>
-    </form>
-    <div class="flex items-center gap-4 text-xs text-slate-500 font-medium">
-        <div class="flex items-center gap-1.5">
-            <span class="w-3 h-3 rounded border border-dashed border-slate-400 bg-slate-100 inline-block"></span> Rencana
-        </div>
-        <div class="flex items-center gap-1.5">
-            <span class="w-3 h-3 rounded bg-blue-600 inline-block"></span> Realisasi
-        </div>
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+    <div class="w-24 h-24 bg-blue-50 border border-blue-100 rounded-3xl flex items-center justify-center mb-6 shadow-inner text-blue-500">
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
     </div>
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">Fitur Dalam Pengembangan 🚀</h2>
+    <p class="text-slate-500 max-w-md mx-auto leading-relaxed">
+        Kami sedang meracik fitur Gantt Chart yang super canggih untuk membantu abang memantau jadwal proyek dengan lebih mudah. Harap bersabar ya!
+    </p>
+    <a href="{{ route('dashboard') }}" class="mt-8 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-sm shadow-blue-600/30">
+        Kembali ke Dashboard
+    </a>
 </div>
-
-@if($projects->isEmpty())
-    <div class="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm">
-        <div class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-inner text-indigo-500">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        </div>
-        <div class="font-bold text-slate-800 mb-1">Belum ada program di tahun {{ $year }}</div>
-        <p class="text-sm text-slate-500">Tambahkan program terlebih dahulu.</p>
-    </div>
-@else
-    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-        <div id="gantt-container"></div>
-    </div>
-
-    {{-- Program summary --}}
-    <div class="mt-6 space-y-3">
-        @foreach($projects as $project)
-        @if($project->tasks->count())
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow transition-all">
-            <div class="flex items-center justify-between mb-3">
-                <a href="{{ route('projects.show', $project->id) }}" class="font-bold text-slate-800 hover:text-blue-600 transition-colors">{{ $project->name }}</a>
-                <span class="text-xs text-blue-600 font-bold">{{ $project->progress }}%</span>
-            </div>
-            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                <div class="h-1.5 rounded-full bg-blue-600" style="width:{{ $project->progress }}%"></div>
-            </div>
-        </div>
-        @endif
-        @endforeach
-    </div>
-@endif
 @endsection
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
-@php
-    $ganttTasks = $projects->flatMap(function($p) {
-        $arr = [];
-        foreach($p->tasks as $t) {
-            $planStart = $t->start_date ? \Carbon\Carbon::parse($t->start_date) : now();
-            $planEnd = $t->due_date ? \Carbon\Carbon::parse($t->due_date) : $planStart->copy()->addDays(7);
-            
-            // Frappe Gantt crashes if end <= start
-            if ($planEnd->startOfDay()->lte($planStart->startOfDay())) {
-                $planEnd = $planStart->copy()->addDay();
-            }
-
-            // Planned Baseline
-            $arr[] = [
-                'id'           => "plan_" . $t->id,
-                'name'         => "[Rencana] " . $t->name,
-                'start'        => $planStart->format('Y-m-d 00:00:00'),
-                'end'          => $planEnd->format('Y-m-d 23:59:59'),
-                'progress'     => $t->progress ?? 0,
-                'dependencies' => '',
-                'project'      => $p->name,
-                'custom_class' => 'bar-planned',
-                'real_id'      => $t->id,
-                'type'         => 'Rencana'
-            ];
-            
-            // Actual Realization (only if started)
-            if ($t->actual_start_date) {
-                $actualStart = \Carbon\Carbon::parse($t->actual_start_date);
-                $actualEnd = $t->actual_end_date ? \Carbon\Carbon::parse($t->actual_end_date) : now();
-                
-                if ($actualEnd->startOfDay()->lte($actualStart->startOfDay())) {
-                    $actualEnd = $actualStart->copy()->addDay();
-                }
-
-                $arr[] = [
-                    'id'           => "actual_" . $t->id,
-                    'name'         => "[Realisasi] " . $t->name,
-                    'start'        => $actualStart->format('Y-m-d 00:00:00'),
-                    'end'          => $actualEnd->format('Y-m-d 23:59:59'),
-                    'progress'     => $t->progress ?? 0,
-                    'dependencies' => '',
-                    'project'      => $p->name,
-                    'custom_class' => 'bar-actual',
-                    'real_id'      => $t->id,
-                    'type'         => 'Realisasi'
-                ];
-            }
-        }
-        return $arr;
-    })->values();
-@endphp
-<script>
-const tasks = @json($ganttTasks);
-
-if (tasks.length > 0) {
-    const gantt = new Gantt("#gantt-container", tasks, {
-        view_mode: 'Week',
-        date_format: 'YYYY-MM-DD',
-        language: 'id',
-        on_click: function (task) {
-            window.location.href = `/tasks/${task.real_id}`;
-        },
-        custom_popup_html: function (task) {
-            return `<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;color:#1e293b;font-size:12px;max-width:200px;box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)">
-                <div style="font-weight:700;margin-bottom:4px;color:#0f172a">${task.name}</div>
-                <div style="color:#64748b">${task.project}</div>
-                <div style="color:#2563eb;font-weight:600;margin-top:4px">Progress: ${task.progress}%</div>
-                <div style="color:#64748b;font-size:11px;margin-top:2px">${task._start.format('DD MMM')} → ${task._end.format('DD MMM')}</div>
-            </div>`;
-        }
-    });
-}
-</script>
-@endpush
