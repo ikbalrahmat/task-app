@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Informasi — @yield('title', 'Login')</title>
+    <title>SENTIMEN | @yield('title', 'Login')</title>
+    <link rel="icon" type="image/png" href="/images/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -438,10 +439,16 @@
         {{-- Sidebar --}}
         <div class="auth-sidebar">
             <div class="sidebar-content">
-                <div class="logo-icon">
-                    <svg style="width: 42px; height: 42px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                <div class="logo-icon" style="background: transparent; box-shadow: none; padding: 0;">
+                    <img src="/images/logo.png" alt="SENTIMEN Logo"
+                         style="width: 80px; height: 80px; object-fit: contain; border-radius: 16px;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div style="display:none; width:80px; height:80px; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); border-radius: 24px; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 20px 50px rgba(37,99,235,0.3);">
+                        <svg style="width: 42px; height: 42px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    </div>
                 </div>
-                <h1>Portal AOPTI</h1>
+                <h1>SENTIMEN</h1>
+                <p style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:0.3px; margin-bottom:8px; margin-top:-10px;">Sistem Evaluasi dan Notifikasi Terintegrasi Monitoring</p>
                 <p>Platform manajemen project terpadu untuk efisiensi dan kolaborasi tim yang lebih baik.</p>
 
                 <div class="feature-list">

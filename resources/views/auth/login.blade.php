@@ -4,7 +4,7 @@
 @section('content')
 
 <div class="form-header">
-    <h2>Masuk Portal</h2>
+    <h2>Masuk SENTIMEN</h2>
     <p>Masukkan kredensial Anda untuk melanjutkan.</p>
 </div>
 

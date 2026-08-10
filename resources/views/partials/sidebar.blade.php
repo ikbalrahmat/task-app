@@ -16,12 +16,16 @@
     {{-- Logo --}}
     <div class="flex items-center justify-between px-6 pt-6 pb-5 border-b border-white/10">
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0 bg-white/15 shadow-lg shadow-blue-900/30 text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0">
+                <img src="/images/logo.png" alt="SENTIMEN Logo" class="w-9 h-9 rounded-xl object-contain"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <div class="w-9 h-9 rounded-xl hidden items-center justify-center text-lg bg-white/15 shadow-lg shadow-blue-900/30 text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
             </div>
             <div>
-                <div class="font-bold text-white text-sm leading-tight">Portal AOPTI</div>
-                <div class="text-[10px] text-blue-200/60 uppercase tracking-widest font-semibold">Project Manager</div>
+                <div class="font-bold text-white text-sm leading-tight">SENTIMEN</div>
+                <div class="text-[10px] text-blue-200/60 uppercase tracking-widest font-semibold">Sistem Evaluasi Monitoring</div>
             </div>
         </div>
         {{-- Close Button for Mobile --}}

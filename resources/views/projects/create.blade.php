@@ -26,7 +26,7 @@
                 <label class="block text-sm font-bold text-slate-700 mb-2">Nama Program <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name') }}" required
                        class="w-full bg-white/50 border @error('name') border-rose-400 focus:border-rose-500 focus:ring-rose-500/20 @else border-slate-200/60 focus:border-blue-500 focus:ring-blue-500/20 @enderror text-slate-900 placeholder-slate-400 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:bg-white transition-all shadow-sm"
-                       placeholder="Misal: Redesain UI Portal AOPTI">
+                       placeholder="Misal: Audit ISO 27001 DC Sentul">
                 @error('name')<p class="text-rose-500 text-xs font-semibold mt-1.5">{{ $message }}</p>@enderror
             </div>
 
