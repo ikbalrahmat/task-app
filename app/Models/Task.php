@@ -34,7 +34,7 @@ class Task extends Model
         'progress'          => 'integer',
     ];
 
-    const STATUSES = ['Belum Mulai', 'Berjalan', 'Selesai', 'Overdue'];
+    const STATUSES = ['Belum Mulai', 'Berjalan', 'Selesai'];
 
     // Relations
     public function project()

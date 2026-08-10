@@ -47,7 +47,7 @@
                     <th class="px-5 py-4 text-center font-semibold">Nama Task</th>
                     <th class="px-5 py-4 text-center font-semibold">Program</th>
                     <th class="px-5 py-4 text-center font-semibold">PIC</th>
-                    <th class="px-5 py-4 text-center font-semibold">Due Date</th>
+                    <th class="px-5 py-4 text-center font-semibold">Periode</th>
                     <th class="px-5 py-4 text-center font-semibold">Progress</th>
                     <th class="px-5 py-4 text-center font-semibold">Status</th>
                     <th class="px-5 py-4 text-center font-semibold">Aksi</th>
@@ -96,17 +96,21 @@
                         @endif
                     </td>
                     <td class="px-5 py-4 text-center text-xs">
-                        @if($task->due_date)
-                            <span class="{{ $task->isOverdue() ? 'text-red-600 font-semibold' : 'text-slate-600' }}">
-                                {{ $task->due_date->format('d M Y') }}
-                            </span>
+                        @if($task->start_date || $task->due_date)
+                            <div class="flex flex-col items-center gap-0.5">
+                                <span class="text-slate-500">{{ $task->start_date ? $task->start_date->format('d M Y') : '-' }}</span>
+                                <span class="text-slate-300 text-[9px] font-bold">s/d</span>
+                                <span class="{{ $task->isOverdue() ? 'text-red-600 font-bold' : 'text-slate-700 font-medium' }}">
+                                    {{ $task->due_date ? $task->due_date->format('d M Y') : '-' }}
+                                </span>
+                            </div>
                             @if($task->isOverdue())
-                                <div class="text-red-600 text-[10px] font-semibold">Overdue</div>
+                                <div class="text-red-600 text-[10px] font-bold mt-1.5">Overdue</div>
                             @elseif($task->days_until_due <= 7 && $task->days_until_due >= 0)
-                                <div class="text-amber-600 text-[10px] font-semibold">H-{{ $task->days_until_due }}</div>
+                                <div class="text-amber-600 text-[10px] font-bold mt-1.5">H-{{ $task->days_until_due }}</div>
                             @endif
                         @else
-                            <span class="text-slate-500">-</span>
+                            <span class="text-slate-400">-</span>
                         @endif
                     </td>
                     <td class="px-5 py-4 min-w-[130px] text-center">
