@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubprojectController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UnitKerjaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -55,9 +56,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
+    // Admin unit kerja & Super Admin routes
     Route::middleware('can:viewAny,App\Models\User')->group(function () {
         Route::get('/admin/activity-logs', [UserController::class, 'logs'])->name('activity-log.index');
         Route::post('/users/{user}/unlock', [UserController::class, 'unlock'])->name('users.unlock');
         Route::resource('users', UserController::class)->except(['show']);
+    });
+
+    // Super Admin only — Unit Kerja management
+    Route::middleware('can:viewAny,App\Models\UnitKerja')->group(function () {
+        Route::resource('unit-kerja', UnitKerjaController::class);
+        Route::get('/super-admin/overview', [UnitKerjaController::class, 'overview'])->name('unit-kerja.overview');
     });
 });

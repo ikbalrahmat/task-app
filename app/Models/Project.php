@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\UnitKerjaScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,6 +10,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Project extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new UnitKerjaScope());
+    }
 
     protected $fillable = [
         'name',
@@ -22,6 +28,7 @@ class Project extends Model
         'actual_end_remarks',
         'description',
         'created_by',
+        'unit_kerja_id',
     ];
 
     protected $attributes = [
@@ -38,6 +45,11 @@ class Project extends Model
     const STATUSES = ['Belum Mulai', 'Berjalan', 'Selesai'];
 
     // Relations
+    public function unitKerja()
+    {
+        return $this->belongsTo(UnitKerja::class);
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class);

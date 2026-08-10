@@ -43,7 +43,7 @@ class TaskController extends Controller
         $data = $request->validated();
         $data['created_by'] = $request->user()->id;
         $task = $this->taskService->create($data);
-        ActivityLogger::log('task.created', 'Membuat task baru: ' . $task->title);
+        ActivityLogger::log('task.created', 'Membuat task baru: ' . $task->name);
         return redirect()->route('tasks.index')->with('success', 'Task berhasil ditambahkan.');
     }
 
@@ -68,7 +68,7 @@ class TaskController extends Controller
         $task = $this->taskService->find($id);
         $this->authorize('update', $task);
         $updated = $this->taskService->update($id, $request->validated());
-        ActivityLogger::log('task.updated', 'Memperbarui task: ' . $updated->title);
+        ActivityLogger::log('task.updated', 'Memperbarui task: ' . $updated->name);
         return redirect()->route('tasks.index')->with('success', 'Task berhasil diperbarui.');
     }
 
@@ -76,9 +76,9 @@ class TaskController extends Controller
     {
         $task = $this->taskService->find($id);
         $this->authorize('delete', $task);
-        $title = $task->title;
+        $name = $task->name;
         $this->taskService->delete($id);
-        ActivityLogger::log('task.deleted', 'Menghapus task: ' . $title);
+        ActivityLogger::log('task.deleted', 'Menghapus task: ' . $name);
         return redirect()->route('tasks.index')->with('success', 'Task berhasil dihapus.');
     }
 }

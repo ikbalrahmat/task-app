@@ -7,118 +7,135 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\UnitKerja;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Users
-        $admin = User::create([
-            'name'       => 'Admin Sistem',
-            'email'      => 'admin@taskflow.id',
-            'password'   => Hash::make('password'),
-            'role'       => 'Admin',
-            'department' => 'Management',
-        ]);
-        $manager = User::create([
-            'name'       => 'Budi Santoso',
-            'email'      => 'budi@taskflow.id',
-            'password'   => Hash::make('password'),
-            'role'       => 'Pengendali Teknis',
-            'department' => 'Operations',
-        ]);
-        $member1 = User::create([
-            'name'       => 'Sari Dewi',
-            'email'      => 'sari@taskflow.id',
-            'password'   => Hash::make('password'),
-            'role'       => 'Ketua Tim',
-            'department' => 'Finance',
-        ]);
-        $member2 = User::create([
-            'name'       => 'Rina Kartika',
-            'email'      => 'rina@taskflow.id',
-            'password'   => Hash::make('password'),
-            'role'       => 'Ketua Tim',
-            'department' => 'HR',
-        ]);
-        $viewer = User::create([
-            'name'       => 'Doni Prasetyo',
-            'email'      => 'doni@taskflow.id',
-            'password'   => Hash::make('password'),
-            'role'       => 'Anggota Tim',
-            'department' => 'Management',
+        // =========================================================
+        // 1. SUPER ADMIN (tidak terikat unit kerja manapun)
+        // =========================================================
+        User::create([
+            'name'          => 'Super Administrator',
+            'email'         => 'superadmin@taskflow.id',
+            'password'      => Hash::make('password'),
+            'role'          => 'Super Admin',
+            'department'    => 'System',
+            'unit_kerja_id' => null,
         ]);
 
-        // Projects
+        // =========================================================
+        // 2. UNIT KERJA A — Dinas Pertanian
+        // =========================================================
+        $ukA = UnitKerja::create([
+            'name'        => 'Dinas Pertanian',
+            'code'        => 'DINTAN',
+            'description' => 'Dinas Pertanian dan Ketahanan Pangan Kota',
+            'is_active'   => true,
+        ]);
+
+        $adminA = User::create([
+            'name' => 'Admin Pertanian', 'email' => 'admin@dintan.id',
+            'password' => Hash::make('password'), 'role' => 'Admin',
+            'department' => 'Management', 'unit_kerja_id' => $ukA->id,
+        ]);
+        $managerA = User::create([
+            'name' => 'Budi Santoso', 'email' => 'budi@dintan.id',
+            'password' => Hash::make('password'), 'role' => 'Pengendali Teknis',
+            'department' => 'Operations', 'unit_kerja_id' => $ukA->id,
+        ]);
+        $ketuaA = User::create([
+            'name' => 'Sari Dewi', 'email' => 'sari@dintan.id',
+            'password' => Hash::make('password'), 'role' => 'Ketua Tim',
+            'department' => 'Field', 'unit_kerja_id' => $ukA->id,
+        ]);
+        $anggotaA = User::create([
+            'name' => 'Doni Prasetyo', 'email' => 'doni@dintan.id',
+            'password' => Hash::make('password'), 'role' => 'Anggota Tim',
+            'department' => 'Field', 'unit_kerja_id' => $ukA->id,
+        ]);
+
         $p1 = Project::create([
-            'name'        => 'Project Q1 - Pengadaan',
-            'year'        => 2025,
-            'status'      => 'Berjalan',
-            'start_date'  => '2025-01-15',
-            'end_date'    => '2025-04-30',
-            'description' => 'Proyek pengadaan barang dan jasa Q1 2025',
-            'created_by'  => $admin->id,
+            'name' => 'Program Pengadaan Bibit Q1', 'year' => 2026,
+            'status' => 'Berjalan', 'start_date' => '2026-01-15',
+            'end_date' => '2026-04-30', 'description' => 'Pengadaan bibit unggul Q1 2026',
+            'created_by' => $adminA->id, 'unit_kerja_id' => $ukA->id,
         ]);
-        $p2 = Project::create([
-            'name'        => 'Project Q2 - Keuangan',
-            'year'        => 2025,
-            'status'      => 'Berjalan',
-            'start_date'  => '2025-03-01',
-            'end_date'    => '2025-06-30',
-            'description' => 'Review laporan keuangan dan rekonsiliasi',
-            'created_by'  => $admin->id,
+        Project::create([
+            'name' => 'Pelatihan Petani', 'year' => 2026,
+            'status' => 'Belum Mulai', 'start_date' => '2026-05-01',
+            'end_date' => '2026-08-31', 'description' => 'Program pelatihan dan penyuluhan petani',
+            'created_by' => $managerA->id, 'unit_kerja_id' => $ukA->id,
         ]);
+
+        $t1 = Task::create(['project_id' => $p1->id, 'name' => 'Survey Kebutuhan Bibit',
+            'start_date' => '2026-01-15', 'due_date' => '2026-02-15',
+            'progress' => 100, 'status' => 'Selesai', 'created_by' => $adminA->id]);
+        $t1->pics()->attach($managerA->id);
+
+        $t2 = Task::create(['project_id' => $p1->id, 'name' => 'Proses Pengadaan',
+            'start_date' => '2026-02-16', 'due_date' => '2026-03-31',
+            'progress' => 60, 'status' => 'Berjalan', 'created_by' => $adminA->id]);
+        $t2->pics()->attach($ketuaA->id);
+
+        $t3 = Task::create(['project_id' => $p1->id, 'name' => 'Distribusi Bibit',
+            'start_date' => '2026-04-01', 'due_date' => '2026-04-30',
+            'progress' => 0, 'status' => 'Belum Mulai', 'created_by' => $adminA->id]);
+        $t3->pics()->attach($anggotaA->id);
+
+        // =========================================================
+        // 3. UNIT KERJA B — Dinas Pendidikan
+        // =========================================================
+        $ukB = UnitKerja::create([
+            'name'        => 'Dinas Pendidikan',
+            'code'        => 'DINDIK',
+            'description' => 'Dinas Pendidikan dan Kebudayaan Kota',
+            'is_active'   => true,
+        ]);
+
+        $adminB = User::create([
+            'name' => 'Admin Pendidikan', 'email' => 'admin@dindik.id',
+            'password' => Hash::make('password'), 'role' => 'Admin',
+            'department' => 'Management', 'unit_kerja_id' => $ukB->id,
+        ]);
+        $managerB = User::create([
+            'name' => 'Rina Kartika', 'email' => 'rina@dindik.id',
+            'password' => Hash::make('password'), 'role' => 'Pengendali Teknis',
+            'department' => 'Akademik', 'unit_kerja_id' => $ukB->id,
+        ]);
+        $anggotaB = User::create([
+            'name' => 'Hendra Wijaya', 'email' => 'hendra@dindik.id',
+            'password' => Hash::make('password'), 'role' => 'Anggota Tim',
+            'department' => 'IT', 'unit_kerja_id' => $ukB->id,
+        ]);
+
         $p3 = Project::create([
-            'name'        => 'Project Q3 - IT Infra',
-            'year'        => 2025,
-            'status'      => 'Belum Mulai',
-            'start_date'  => '2025-07-01',
-            'end_date'    => '2025-09-30',
-            'description' => 'Upgrade infrastruktur IT perusahaan',
-            'created_by'  => $manager->id,
+            'name' => 'Digitalisasi Administrasi Sekolah', 'year' => 2026,
+            'status' => 'Berjalan', 'start_date' => '2026-02-01',
+            'end_date' => '2026-07-31', 'description' => 'Implementasi sistem digital administrasi sekolah negeri',
+            'created_by' => $adminB->id, 'unit_kerja_id' => $ukB->id,
         ]);
         $p4 = Project::create([
-            'name'        => 'Project Q4 - SDM',
-            'year'        => 2025,
-            'status'      => 'Selesai',
-            'start_date'  => '2025-01-02',
-            'end_date'    => '2025-02-28',
-            'description' => 'Review proses rekrutmen dan penggajian',
-            'created_by'  => $manager->id,
+            'name' => 'Review Kurikulum 2026', 'year' => 2026,
+            'status' => 'Selesai', 'start_date' => '2026-01-05',
+            'end_date' => '2026-03-31', 'description' => 'Review dan pembaruan kurikulum 2026',
+            'created_by' => $managerB->id, 'unit_kerja_id' => $ukB->id,
         ]);
 
-        // Tasks for P1
-        $t1 = Task::create(['project_id'=>$p1->id,'name'=>'Review Dokumen','start_date'=>'2025-01-15','due_date'=>'2025-02-15','progress'=>100,'status'=>'Selesai','created_by'=>$admin->id]);
-        $t1->pics()->attach($manager->id);
-        
-        $t2 = Task::create(['project_id'=>$p1->id,'name'=>'Wawancara Stakeholder','start_date'=>'2025-02-16','due_date'=>'2025-03-10','progress'=>75,'status'=>'Berjalan','created_by'=>$admin->id]);
-        $t2->pics()->attach($member1->id);
-        
-        $t3 = Task::create(['project_id'=>$p1->id,'name'=>'Konfirmasi Vendor','start_date'=>'2025-03-11','due_date'=>'2025-04-10','progress'=>30,'status'=>'Berjalan','created_by'=>$admin->id]);
-        $t3->pics()->attach($manager->id);
-        
-        $t4 = Task::create(['project_id'=>$p1->id,'name'=>'Penyusunan Laporan','start_date'=>'2025-04-11','due_date'=>'2025-04-30','progress'=>0,'status'=>'Belum Mulai','created_by'=>$admin->id]);
-        $t4->pics()->attach($member2->id);
+        $t4 = Task::create(['project_id' => $p3->id, 'name' => 'Analisis Kebutuhan Sistem',
+            'start_date' => '2026-02-01', 'due_date' => '2026-03-01',
+            'progress' => 100, 'status' => 'Selesai', 'created_by' => $adminB->id]);
+        $t4->pics()->attach($managerB->id);
 
-        // Tasks for P2
-        $t5 = Task::create(['project_id'=>$p2->id,'name'=>'Pengumpulan Data','start_date'=>'2025-03-01','due_date'=>'2025-03-31','progress'=>100,'status'=>'Selesai','created_by'=>$admin->id]);
-        $t5->pics()->attach($viewer->id);
-        
-        $t6 = Task::create(['project_id'=>$p2->id,'name'=>'Analisis Laporan','start_date'=>'2025-04-01','due_date'=>'2025-05-01','progress'=>60,'status'=>'Berjalan','created_by'=>$admin->id]);
-        $t6->pics()->attach($member1->id);
-        
-        $t7 = Task::create(['project_id'=>$p2->id,'name'=>'Rekonsiliasi Bank','start_date'=>'2025-05-02','due_date'=>'2025-05-31','progress'=>20,'status'=>'Berjalan','created_by'=>$admin->id]);
-        $t7->pics()->attach($member2->id);
+        $t5 = Task::create(['project_id' => $p3->id, 'name' => 'Pengembangan Aplikasi',
+            'start_date' => '2026-03-02', 'due_date' => '2026-05-31',
+            'progress' => 45, 'status' => 'Berjalan', 'created_by' => $adminB->id]);
+        $t5->pics()->attach($anggotaB->id);
 
-        // Tasks for P3
-        $t8 = Task::create(['project_id'=>$p3->id,'name'=>'Inventarisasi Aset IT','start_date'=>'2025-07-01','due_date'=>'2025-07-31','progress'=>0,'status'=>'Belum Mulai','created_by'=>$manager->id]);
-        $t8->pics()->attach($manager->id);
-
-        // Tasks for P4
-        $t9 = Task::create(['project_id'=>$p4->id,'name'=>'Review Penggajian','start_date'=>'2025-01-02','due_date'=>'2025-01-31','progress'=>100,'status'=>'Selesai','created_by'=>$manager->id]);
-        $t9->pics()->attach($viewer->id);
-        
-        $t10 = Task::create(['project_id'=>$p4->id,'name'=>'Review Rekrutmen','start_date'=>'2025-02-01','due_date'=>'2025-02-28','progress'=>100,'status'=>'Selesai','created_by'=>$manager->id]);
-        $t10->pics()->attach($member2->id);
+        $t6 = Task::create(['project_id' => $p4->id, 'name' => 'Review Dokumen Kurikulum',
+            'start_date' => '2026-01-05', 'due_date' => '2026-02-28',
+            'progress' => 100, 'status' => 'Selesai', 'created_by' => $managerB->id]);
+        $t6->pics()->attach($managerB->id);
     }
 }

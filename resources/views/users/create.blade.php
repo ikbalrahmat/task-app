@@ -43,6 +43,34 @@
                 </div>
             </div>
 
+            {{-- Unit Kerja: hanya Super Admin yang bisa pilih, Admin biasa auto-assign --}}
+            @if(auth()->user()->isSuperAdmin())
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Unit Kerja <span class="text-red-600">*</span>
+                </label>
+                <select name="unit_kerja_id" required
+                        class="w-full bg-white border @error('unit_kerja_id') border-red-500 @else border-slate-200 @enderror text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                    <option value="">— Pilih Unit Kerja —</option>
+                    @foreach($unitKerjas as $uk)
+                        <option value="{{ $uk->id }}" {{ old('unit_kerja_id') == $uk->id ? 'selected' : '' }}>
+                            [{{ $uk->code }}] {{ $uk->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('unit_kerja_id')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
+            </div>
+            @else
+            {{-- Admin biasa: tampilkan unit kerja sendiri (read-only) --}}
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Unit Kerja</label>
+                <div class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 font-medium">
+                    {{ auth()->user()->unitKerja?->name ?? '-' }}
+                    <span class="text-xs text-slate-400 ml-2">(otomatis sesuai unit kerja Anda)</span>
+                </div>
+            </div>
+            @endif
+
             <div>
                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Password <span class="text-red-500">*</span></label>
                 <div x-data="{ show: false }" class="relative">

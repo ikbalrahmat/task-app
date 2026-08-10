@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\ActivityLog;
+use App\Models\UnitKerja;
 use App\Services\UserService;
 use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
@@ -25,13 +26,21 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize('create', User::class);
-        return view('users.create');
+        $unitKerjas = UnitKerja::where('is_active', true)->orderBy('name')->get();
+        return view('users.create', compact('unitKerjas'));
     }
 
     public function store(StoreUserRequest $request)
     {
         $this->authorize('create', User::class);
-        $user = $this->service->create($request->validated());
+        $data = $request->validated();
+
+        // Kalau bukan Super Admin, otomatis assign ke unit kerja sendiri
+        if (!auth()->user()->isSuperAdmin()) {
+            $data['unit_kerja_id'] = auth()->user()->unit_kerja_id;
+        }
+
+        $user = $this->service->create($data);
         
         ActivityLogger::log('user.created', 'Admin membuat pengguna baru: ' . $user->email);
         
@@ -42,15 +51,23 @@ class UserController extends Controller
     {
         $user = $this->service->find($id);
         $this->authorize('update', $user);
-        return view('users.edit', compact('user'));
+        $unitKerjas = UnitKerja::where('is_active', true)->orderBy('name')->get();
+        return view('users.edit', compact('user', 'unitKerjas'));
     }
 
     public function update(UpdateUserRequest $request, int $id)
     {
         $user = $this->service->find($id);
         $this->authorize('update', $user);
+
+        $data = $request->validated();
+
+        // Kalau bukan Super Admin, paksa unit kerja tetap sama
+        if (!auth()->user()->isSuperAdmin()) {
+            $data['unit_kerja_id'] = auth()->user()->unit_kerja_id;
+        }
         
-        $updatedUser = $this->service->update($id, $request->validated());
+        $updatedUser = $this->service->update($id, $data);
         
         ActivityLogger::log('user.updated', 'Admin memperbarui data pengguna: ' . $updatedUser->email);
         
@@ -90,9 +107,23 @@ class UserController extends Controller
 
     public function logs(Request $request)
     {
-        $this->authorize('viewAny', User::class); // Ensure user is admin
-        
+        $this->authorize('viewAny', User::class);
+
         $query = ActivityLog::with('user')->orderBy('created_at', 'desc');
+
+        // Isolasi per unit kerja: Admin hanya lihat log dari user di unitnya
+        if (!auth()->user()->isSuperAdmin()) {
+            $unitKerjaId = auth()->user()->unit_kerja_id;
+            $query->where(function ($q) use ($unitKerjaId) {
+                // Log dari user yang sama unit kerjanya
+                $q->whereHas('user', fn($uq) => $uq->where('unit_kerja_id', $unitKerjaId))
+                  // Atau log dari user yang belum login (null user_id) — skip
+                  ->orWhereNull('user_id');
+            });
+            // Tapi yang null user_id jangan ikut (bisa log dari unit lain saat belum login)
+            $query->whereNotNull('user_id')
+                  ->whereHas('user', fn($uq) => $uq->where('unit_kerja_id', $unitKerjaId));
+        }
         
         if ($request->filled('search')) {
             $search = $request->input('search');

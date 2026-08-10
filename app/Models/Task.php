@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\UnitKerjaViaProjectScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -103,6 +104,9 @@ class Task extends Model
 
     protected static function booted()
     {
+        // Isolasi data per unit kerja
+        static::addGlobalScope(new UnitKerjaViaProjectScope());
+
         static::saved(function ($task) {
             $task->recalculateParentStatuses();
         });

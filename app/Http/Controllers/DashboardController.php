@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DashboardService;
+use App\Models\UnitKerja;
+use App\Models\User;
+use App\Models\Project;
+use App\Models\Task;
 
 class DashboardController extends Controller
 {
@@ -11,6 +15,25 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        $user = auth()->user();
+
+        // Super Admin: redirect ke overview semua unit kerja
+        if ($user->isSuperAdmin()) {
+            $unitKerjas = UnitKerja::withCount(['users', 'projects'])
+                ->where('is_active', true)
+                ->orderBy('name')
+                ->get();
+
+            $totalUsers     = User::withoutGlobalScopes()->whereNotNull('unit_kerja_id')->count();
+            $totalProjects  = Project::withoutGlobalScopes()->count();
+            $totalTasks     = Task::withoutGlobalScopes()->count();
+            $totalUnitKerja = UnitKerja::count();
+
+            return view('dashboard.super-admin', compact(
+                'unitKerjas', 'totalUsers', 'totalProjects', 'totalTasks', 'totalUnitKerja'
+            ));
+        }
+
         $year  = $request->integer('year', date('Y'));
         $stats = $this->service->getStats($year);
 
@@ -19,8 +42,6 @@ class DashboardController extends Controller
         if (!in_array($year, $availableYears)) $availableYears[] = $year;
         rsort($availableYears);
 
-        $user = auth()->user();
-        
         $data = [
             'year'              => $year,
             'stats'             => $stats,
@@ -47,10 +68,10 @@ class DashboardController extends Controller
                 ->where('status', '!=', 'Selesai')
                 ->whereDate('due_date', '<', today())
                 ->count();
-                
+
             $data['myStats'] = [
-                'total' => $myTotalTasks,
-                'done' => $myDoneTasks,
+                'total'   => $myTotalTasks,
+                'done'    => $myDoneTasks,
                 'overdue' => $myOverdueTasks,
             ];
 
@@ -58,19 +79,19 @@ class DashboardController extends Controller
                 ->whereDate('due_date', today())
                 ->where('status', '!=', 'Selesai')
                 ->get();
-                
+
             $data['overdue'] = \App\Models\Task::whereHas('pics', fn($q) => $q->where('users.id', $user->id))
                 ->where('status', '!=', 'Selesai')
                 ->whereDate('due_date', '<', today())
                 ->get();
-                
+
             $data['upcomingDeadlines'] = \App\Models\Task::whereHas('pics', fn($q) => $q->where('users.id', $user->id))
                 ->where('status', '!=', 'Selesai')
                 ->whereDate('due_date', '>=', today())
                 ->whereDate('due_date', '<=', today()->addDays(7))
                 ->orderBy('due_date')
                 ->get();
-                
+
             $data['activeTasks'] = \App\Models\Task::whereHas('pics', fn($q) => $q->where('users.id', $user->id))
                 ->where('status', 'Berjalan')
                 ->get();

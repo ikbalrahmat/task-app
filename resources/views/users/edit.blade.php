@@ -39,6 +39,33 @@
                 </div>
             </div>
 
+            {{-- Unit Kerja: Super Admin bisa pindah, Admin biasa read-only --}}
+            @if(auth()->user()->isSuperAdmin())
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Unit Kerja <span class="text-red-600">*</span>
+                </label>
+                <select name="unit_kerja_id"
+                        class="w-full bg-white border @error('unit_kerja_id') border-red-500 @else border-slate-200 @enderror text-slate-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                    <option value="">— Tanpa Unit Kerja —</option>
+                    @foreach($unitKerjas as $uk)
+                        <option value="{{ $uk->id }}" {{ old('unit_kerja_id', $user->unit_kerja_id) == $uk->id ? 'selected' : '' }}>
+                            [{{ $uk->code }}] {{ $uk->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('unit_kerja_id')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
+            </div>
+            @else
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Unit Kerja</label>
+                <div class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 font-medium">
+                    {{ $user->unitKerja?->name ?? '-' }}
+                    <span class="text-xs text-slate-400 ml-2">(tidak dapat diubah)</span>
+                </div>
+            </div>
+            @endif
+
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 font-medium">
                 💡 Kosongkan password jika tidak ingin mengubahnya.
             </div>

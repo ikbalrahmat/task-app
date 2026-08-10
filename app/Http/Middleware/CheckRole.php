@@ -9,9 +9,21 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, string ...$roles): mixed
     {
-        if (!$request->user() || !in_array($request->user()->role, $roles)) {
+        $user = $request->user();
+
+        if (!$user) {
             abort(403, 'Akses tidak diizinkan.');
         }
+
+        // Super Admin melewati semua role check
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
+        if (!in_array($user->role, $roles)) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
         return $next($request);
     }
 }

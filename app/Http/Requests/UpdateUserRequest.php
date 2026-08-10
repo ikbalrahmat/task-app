@@ -12,9 +12,9 @@ class UpdateUserRequest extends FormRequest
     {
         $userId = $this->route('user');
         return [
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:users,email,' . $userId,
-            'password'   => [
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:users,email,' . $userId,
+            'password'      => [
                 'nullable',
                 'string',
                 'confirmed',
@@ -24,8 +24,9 @@ class UpdateUserRequest extends FormRequest
                     ->symbols()
                     ->uncompromised()
             ],
-            'role'       => 'required|in:Admin,Pengendali Teknis,Ketua Tim,Anggota Tim',
-            'department' => 'nullable|string|max:100',
+            'role'          => 'required|in:Super Admin,Admin,Pengendali Teknis,Ketua Tim,Anggota Tim',
+            'department'    => 'nullable|string|max:100',
+            'unit_kerja_id' => 'nullable|exists:unit_kerjas,id',
         ];
     }
 

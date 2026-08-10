@@ -96,8 +96,8 @@ class AuthController extends Controller
             }
         }
 
-        // Timing attack defense for non-existent users
-        Hash::check('dummy-password', '$2y$12$DummyHashForTimingAttackDefenseOnlyDoNotUseInProd');
+        // Timing attack defense for non-existent users (prevent user enumeration via timing)
+        Hash::check('dummy-password', '$2y$12$abcdefghijklmnopqrstuuABC123456789DEFGHIJKLMNOPQRSTUVWXYa');
         ActivityLogger::log('auth.login.failed', 'Failed login attempt for non-existent email: ' . $email);
 
         return back()->withErrors(['email' => $genericError])->onlyInput('email');

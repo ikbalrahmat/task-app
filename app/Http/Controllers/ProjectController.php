@@ -34,6 +34,12 @@ class ProjectController extends Controller
         $this->authorize('create', Project::class);
         $data = $request->validated();
         $data['created_by'] = $request->user()->id;
+
+        // Auto-assign unit kerja dari user yang login
+        if (!$request->user()->isSuperAdmin()) {
+            $data['unit_kerja_id'] = $request->user()->unit_kerja_id;
+        }
+
         $project = $this->service->create($data);
         ActivityLogger::log('project.created', 'Membuat project baru: ' . $project->name);
         return redirect()->route('projects.index')->with('success', 'Program berhasil ditambahkan.');
@@ -87,6 +93,12 @@ class ProjectController extends Controller
         ]);
 
         $targetProjectId = $request->input('target_project_id');
+
+        // Validasi: target project harus dari unit kerja yang sama
+        $targetProject = Project::findOrFail($targetProjectId);
+        if (!auth()->user()->isSuperAdmin() && $targetProject->unit_kerja_id !== $project->unit_kerja_id) {
+            return back()->withErrors(['target_project_id' => 'Project tujuan harus berada di unit kerja yang sama.']);
+        }
 
         DB::transaction(function () use ($project, $targetProjectId) {
             // 1. Create new Subproject under the target Project

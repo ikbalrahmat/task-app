@@ -11,9 +11,9 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:users,email',
-            'password'   => [
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:users,email',
+            'password'      => [
                 'required',
                 'string',
                 'confirmed',
@@ -23,8 +23,9 @@ class StoreUserRequest extends FormRequest
                     ->symbols()
                     ->uncompromised()
             ],
-            'role'       => 'required|in:Admin,Pengendali Teknis,Ketua Tim,Anggota Tim',
-            'department' => 'nullable|string|max:100',
+            'role'          => 'required|in:Super Admin,Admin,Pengendali Teknis,Ketua Tim,Anggota Tim',
+            'department'    => 'nullable|string|max:100',
+            'unit_kerja_id' => 'nullable|exists:unit_kerjas,id',
         ];
     }
 

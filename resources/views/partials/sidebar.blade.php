@@ -34,8 +34,53 @@
         </button>
     </div>
 
+    {{-- Unit Kerja Badge (untuk non-Super Admin) --}}
+    @if(auth()->user() && !auth()->user()->isSuperAdmin() && auth()->user()->unitKerja)
+    <div class="mx-4 mt-3 px-3 py-2 rounded-lg bg-white/10 border border-white/10">
+        <div class="text-[9px] uppercase tracking-widest text-blue-200/50 font-semibold mb-0.5">Unit Kerja</div>
+        <div class="text-xs text-white font-semibold truncate">{{ auth()->user()->unitKerja->name }}</div>
+    </div>
+    @elseif(auth()->user() && auth()->user()->isSuperAdmin())
+    <div class="mx-4 mt-3 px-3 py-2 rounded-lg bg-yellow-400/10 border border-yellow-400/20">
+        <div class="text-[9px] uppercase tracking-widest text-yellow-300/60 font-semibold mb-0.5">Mode</div>
+        <div class="text-xs text-yellow-200 font-semibold">⚡ Super Admin</div>
+    </div>
+    @endif
+
     {{-- Navigation --}}
     <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+
+        @if(auth()->user() && auth()->user()->isSuperAdmin())
+        {{-- Super Admin Menu --}}
+        <p class="text-[10px] uppercase tracking-widest text-blue-200/40 font-semibold px-3 mb-2">Overview</p>
+        <a href="{{ route('dashboard') }}"
+           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('dashboard') ? 'bg-white/15 text-white border-l-2 border-white shadow-sm shadow-blue-900/20' : 'text-blue-100/70 hover:bg-white/10 hover:text-white' }}">
+            <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            Dashboard
+        </a>
+        <p class="text-[10px] uppercase tracking-widest text-yellow-300/40 font-semibold px-3 pt-4 pb-2">⚙ Manajemen</p>
+        <a href="{{ route('unit-kerja.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('unit-kerja.*') ? 'bg-yellow-400/15 text-yellow-200 border-l-2 border-yellow-300 shadow-sm' : 'text-blue-200/60 hover:bg-white/10 hover:text-blue-100' }}">
+            <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            Unit Kerja
+        </a>
+        <a href="{{ route('users.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('users.*') ? 'bg-white/15 text-white shadow-sm border border-white/10' : 'text-blue-200/60 hover:bg-white/10 hover:text-blue-100' }}">
+            <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            Semua User
+        </a>
+        <a href="{{ route('activity-log.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('activity-log.*') ? 'bg-white/15 text-white shadow-sm border border-white/10' : 'text-blue-200/60 hover:bg-white/10 hover:text-blue-100' }}">
+            <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            Activity Log
+        </a>
+
+        @else
+        {{-- Regular User Menu --}}
         <p class="text-[10px] uppercase tracking-widest text-blue-200/40 font-semibold px-3 mb-2">Workspace</p>
 
         <a href="{{ route('dashboard') }}"
@@ -106,5 +151,9 @@
             Activity Log
         </a>
         @endif
+        @endif
+
     </nav>
 </aside>
+
+

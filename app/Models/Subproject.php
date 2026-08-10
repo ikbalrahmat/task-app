@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
+use App\Scopes\UnitKerjaViaProjectScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subproject extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        // Isolasi data per unit kerja
+        static::addGlobalScope(new UnitKerjaViaProjectScope());
+    }
 
     protected $fillable = [
         'project_id',
