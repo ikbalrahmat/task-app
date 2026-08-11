@@ -81,7 +81,7 @@
         }
 
         .auth-sidebar {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.92) 0%, rgba(37, 99, 235, 0.85) 100%), url('/images/bg-login.jpg') center/cover no-repeat;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -102,6 +102,7 @@
             border-radius: 50%;
             top: 20%;
             right: -50px;
+            pointer-events: none;
         }
 
         .auth-sidebar::after {
@@ -113,6 +114,7 @@
             border-radius: 50%;
             bottom: 10%;
             left: -30px;
+            pointer-events: none;
         }
 
         .sidebar-content {

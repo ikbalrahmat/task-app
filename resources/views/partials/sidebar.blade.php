@@ -99,6 +99,12 @@
             <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
             Program
         </a>
+        <a href="{{ route('agenda.index') }}"
+           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
+                  {{ request()->routeIs('agenda.*') ? 'bg-white/15 text-white border-l-2 border-white shadow-sm shadow-blue-900/20' : 'text-blue-100/70 hover:bg-white/10 hover:text-white' }}">
+            <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Agenda Tahunan
+        </a>
         <a href="{{ route('subprojects.index') }}"
            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
                   {{ request()->routeIs('subprojects.*') ? 'bg-white/15 text-white border-l-2 border-white shadow-sm shadow-blue-900/20' : 'text-blue-100/70 hover:bg-white/10 hover:text-white' }}">

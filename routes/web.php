@@ -15,6 +15,8 @@ use App\Http\Controllers\SubprojectController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UnitKerjaController;
+use App\Http\Controllers\AgendaKegiatanController;
+use App\Http\Controllers\HariLiburController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -67,5 +69,23 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:viewAny,App\Models\UnitKerja')->group(function () {
         Route::resource('unit-kerja', UnitKerjaController::class);
         Route::get('/super-admin/overview', [UnitKerjaController::class, 'overview'])->name('unit-kerja.overview');
+    });
+
+    // Agenda Tahunan
+    Route::prefix('agenda')->name('agenda.')->group(function () {
+        Route::get('/', [AgendaKegiatanController::class, 'index'])->name('index');
+        Route::post('/', [AgendaKegiatanController::class, 'store'])->name('store');
+        Route::put('/{agenda}', [AgendaKegiatanController::class, 'update'])->name('update');
+        Route::delete('/{agenda}', [AgendaKegiatanController::class, 'destroy'])->name('destroy');
+        Route::post('/{agenda}/mapping', [AgendaKegiatanController::class, 'mapping'])->name('mapping');
+        Route::delete('/{agenda}/mapping', [AgendaKegiatanController::class, 'resetMapping'])->name('resetMapping');
+    });
+
+    // Hari Libur (Admin & Super Admin)
+    Route::middleware('can:viewAny,App\Models\User')->prefix('hari-libur')->name('hari-libur.')->group(function () {
+        Route::get('/', [HariLiburController::class, 'index'])->name('index');
+        Route::post('/', [HariLiburController::class, 'store'])->name('store');
+        Route::delete('/{hariLibur}', [HariLiburController::class, 'destroy'])->name('destroy');
+        Route::post('/sync/{tahun?}', [HariLiburController::class, 'sync'])->name('sync');
     });
 });

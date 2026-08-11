@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 
 // Scheduler: Jalankan reminder task setiap hari pukul 08:00 WIB
 Schedule::command(TaskReminderCommand::class)->dailyAt('08:00');
+
+// Scheduler: Auto-sync hari libur nasional setiap 1 Januari jam 00:05
+Schedule::command('libur:sync', [date('Y') + 1])->yearlyOn(1, 1, '00:05');
+
