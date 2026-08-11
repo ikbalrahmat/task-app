@@ -5,6 +5,9 @@ namespace App\Notifications;
 use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class TaskAssignedNotification extends Notification
 {
@@ -16,7 +19,21 @@ class TaskAssignedNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', FcmChannel::class];
+    }
+
+    public function toFcm($notifiable)
+    {
+        $projectName = $this->task->project->name ?? '-';
+        return FcmMessage::create()
+            ->notification(FcmNotification::create()
+                ->title('Tugas Baru: ' . $this->task->name)
+                ->body('Anda ditunjuk sebagai PIC baru untuk tugas ini.')
+            )
+            ->data([
+                'task_id' => (string) $this->task->id,
+                'url' => url('/tasks/' . $this->task->id)
+            ]);
     }
 
     public function toArray(object $notifiable): array

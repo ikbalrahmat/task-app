@@ -62,7 +62,23 @@ class TaskRepository implements TaskRepositoryInterface
         }
         unset($data['pic_ids']);
 
+        $oldStatus = $task->status;
         $task->update($data);
+
+        // Check if status changed and trigger notification
+        if (array_key_exists('status', $data) && $data['status'] !== $oldStatus) {
+            $updater = auth()->user();
+            
+            $usersToNotify = collect([$task->creator])
+                ->merge($task->pics)
+                ->filter(fn($u) => $u && $updater && $u->id !== $updater->id)
+                ->unique('id');
+
+            foreach ($usersToNotify as $userToNotify) {
+                $userToNotify->notify(new \App\Notifications\TaskStatusUpdatedNotification($task, $oldStatus, $updater));
+            }
+        }
+
         return $task;
     }
 

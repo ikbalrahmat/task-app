@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\TaskComment;
+use App\Notifications\TaskCommentNotification;
 use Illuminate\Http\Request;
 use App\Services\ActivityLogger;
 
@@ -23,6 +24,16 @@ class TaskCommentController extends Controller
             'user_id' => $request->user()->id,
             'comment' => $request->comment,
         ]);
+
+        // Send Notification to Creator and PICs
+        $usersToNotify = collect([$task->creator])
+            ->merge($task->pics)
+            ->filter(fn($u) => $u && $u->id !== $request->user()->id)
+            ->unique('id');
+
+        foreach ($usersToNotify as $userToNotify) {
+            $userToNotify->notify(new TaskCommentNotification($task, $newComment));
+        }
         ActivityLogger::log('comment.created', "Menambahkan komentar pada task '{$task->title}'");
 
         return back()->with('success', 'Komentar berhasil ditambahkan.');

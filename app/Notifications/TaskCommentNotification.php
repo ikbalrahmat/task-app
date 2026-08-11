@@ -3,17 +3,18 @@
 namespace App\Notifications;
 
 use App\Models\Task;
+use App\Models\TaskComment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
-class TaskDeadlineApproachingNotification extends Notification
+class TaskCommentNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public Task $task)
+    public function __construct(public Task $task, public TaskComment $comment)
     {
     }
 
@@ -24,11 +25,16 @@ class TaskDeadlineApproachingNotification extends Notification
 
     public function toFcm($notifiable)
     {
-        $dueDateStr = $this->task->due_date ? $this->task->due_date->format('d M Y') : '-';
+        $commenterName = $this->comment->user->name ?? 'Seseorang';
+        // Strip tags in case comment has HTML
+        $commentText = strip_tags($this->comment->comment);
+        // Truncate to 50 chars for the push notification body
+        $commentText = strlen($commentText) > 50 ? substr($commentText, 0, 50) . '...' : $commentText;
+
         return FcmMessage::create()
             ->notification(FcmNotification::create()
-                ->title('Peringatan Deadline')
-                ->body('Tugas "' . $this->task->name . '" mendekati deadline pada ' . $dueDateStr . '.')
+                ->title('💬 Komentar: ' . $this->task->name)
+                ->body($commenterName . ': ' . $commentText)
             )
             ->data([
                 'task_id' => (string) $this->task->id,
@@ -38,14 +44,12 @@ class TaskDeadlineApproachingNotification extends Notification
 
     public function toArray(object $notifiable): array
     {
-        $projectName = $this->task->project->name ?? '-';
-        $dueDateStr = $this->task->due_date ? $this->task->due_date->format('d M Y') : '-';
+        $commenterName = $this->comment->user->name ?? 'Seseorang';
         return [
             'task_id' => $this->task->id,
             'task_name' => $this->task->name,
-            'project_name' => $projectName,
-            'due_date' => $this->task->due_date ? $this->task->due_date->format('Y-m-d') : null,
-            'message' => 'Peringatan: Tugas "' . $this->task->name . '" mendekati deadline pada ' . $dueDateStr . '.',
+            'comment_id' => $this->comment->id,
+            'message' => $commenterName . ' mengomentari tugas "' . $this->task->name . '".',
         ];
     }
 }

@@ -3,17 +3,18 @@
 namespace App\Notifications;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
-class TaskDeadlineApproachingNotification extends Notification
+class TaskStatusUpdatedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public Task $task)
+    public function __construct(public Task $task, public string $oldStatus, public User $updater)
     {
     }
 
@@ -24,11 +25,10 @@ class TaskDeadlineApproachingNotification extends Notification
 
     public function toFcm($notifiable)
     {
-        $dueDateStr = $this->task->due_date ? $this->task->due_date->format('d M Y') : '-';
         return FcmMessage::create()
             ->notification(FcmNotification::create()
-                ->title('Peringatan Deadline')
-                ->body('Tugas "' . $this->task->name . '" mendekati deadline pada ' . $dueDateStr . '.')
+                ->title('✅ Status Diperbarui: ' . $this->task->name)
+                ->body($this->updater->name . ' mengubah status menjadi "' . $this->task->status . '".')
             )
             ->data([
                 'task_id' => (string) $this->task->id,
@@ -38,14 +38,12 @@ class TaskDeadlineApproachingNotification extends Notification
 
     public function toArray(object $notifiable): array
     {
-        $projectName = $this->task->project->name ?? '-';
-        $dueDateStr = $this->task->due_date ? $this->task->due_date->format('d M Y') : '-';
         return [
             'task_id' => $this->task->id,
             'task_name' => $this->task->name,
-            'project_name' => $projectName,
-            'due_date' => $this->task->due_date ? $this->task->due_date->format('Y-m-d') : null,
-            'message' => 'Peringatan: Tugas "' . $this->task->name . '" mendekati deadline pada ' . $dueDateStr . '.',
+            'old_status' => $this->oldStatus,
+            'new_status' => $this->task->status,
+            'message' => $this->updater->name . ' mengubah status tugas "' . $this->task->name . '" menjadi ' . $this->task->status . '.',
         ];
     }
 }

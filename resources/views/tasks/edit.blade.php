@@ -24,6 +24,9 @@
                             </option>
                         @endforeach
                     </select>
+                    @if(!auth()->user()->hasCrudAccess())
+                        <input type="hidden" name="project_id" value="{{ $task->project_id }}">
+                    @endif
                 </div>
 
                 {{-- Subprojects Dropdown (Only show if project has subprojects) --}}
@@ -41,6 +44,9 @@
                             <option :value="sub.id" x-text="sub.name" :selected="selectedSubproject == sub.id"></option>
                         </template>
                     </select>
+                    @if(!auth()->user()->hasCrudAccess() && $task->subproject_id)
+                        <input type="hidden" name="subproject_id" value="{{ $task->subproject_id }}">
+                    @endif
                     @error('subproject_id')<p class="text-red-600 text-xs mt-1.5">{{ $message }}</p>@enderror
                 </div>
             </div>

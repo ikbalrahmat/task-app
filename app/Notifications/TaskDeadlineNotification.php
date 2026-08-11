@@ -6,6 +6,9 @@ use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class TaskDeadlineNotification extends Notification
 {
@@ -15,7 +18,33 @@ class TaskDeadlineNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail', 'database', FcmChannel::class];
+    }
+
+    public function toFcm($notifiable)
+    {
+        $days = $this->task->days_until_due;
+        $title = match(true) {
+            $days < 0  => "[OVERDUE] Task: {$this->task->name}",
+            $days == 0 => "[HARI INI] Task: {$this->task->name}",
+            default    => "[H-{$days}] Task: {$this->task->name}",
+        };
+
+        $body = match(true) {
+            $days < 0  => "Tugas ini terlambat " . abs($days) . " hari.",
+            $days == 0 => "Tugas ini jatuh tempo hari ini.",
+            default    => "Tugas ini mendekati deadline dalam {$days} hari.",
+        };
+
+        return FcmMessage::create()
+            ->notification(FcmNotification::create()
+                ->title($title)
+                ->body($body)
+            )
+            ->data([
+                'task_id' => (string) $this->task->id,
+                'url' => url('/tasks/' . $this->task->id)
+            ]);
     }
 
     public function toMail(object $notifiable): MailMessage

@@ -95,4 +95,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(TaskAttachment::class, 'uploaded_by');
     }
+
+    /**
+     * Route notifications for the FCM channel.
+     */
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
 }

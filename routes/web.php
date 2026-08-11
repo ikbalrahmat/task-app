@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/fcm-token', [ProfileController::class, 'updateFcmToken'])->name('profile.fcm_token');
 
     // Admin unit kerja & Super Admin routes
     Route::middleware('can:viewAny,App\Models\User')->group(function () {

@@ -142,6 +142,71 @@
 </div>
 
 @stack('scripts')
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAy3CM2I2OREwSWHPkWVQ0_sVk-3e415WM",
+        authDomain: "sentimen-notif.firebaseapp.com",
+        projectId: "sentimen-notif",
+        storageBucket: "sentimen-notif.firebasestorage.app",
+        messagingSenderId: "441496587129",
+        appId: "1:441496587129:web:3cd9cd4ac13acf87083da8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                const messaging = getMessaging(app);
+                
+                Notification.requestPermission().then((permission) => {
+                    if (permission === 'granted') {
+                        // NOTE: vapidKey is highly recommended by Firebase for production push notifications
+                        // To get this: Firebase Console -> Project Settings -> Cloud Messaging -> Web Push certificates -> Generate
+                        getToken(messaging, { 
+                            serviceWorkerRegistration: registration,
+                            vapidKey: "BGxhGPzxTiwLRNVzrJWRdSTMdK8T1JT6nwJIfcNJD0VnQFaLvWkwNuSUb7XpBjSyleormihjzPmyunDGjLgqLuc"
+                        }).then((currentToken) => {
+                            if (currentToken) {
+                                // Save token to Laravel backend
+                                fetch("{{ route('profile.fcm_token') }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: JSON.stringify({ token: currentToken })
+                                });
+                            }
+                        }).catch((err) => {
+                            console.error('Error retrieving FCM token: ', err);
+                        });
+                    }
+                });
+
+                // Foreground message handler
+                onMessage(messaging, (payload) => {
+                    console.log('Foreground message received: ', payload);
+                    
+                    // Munculkan notifikasi sistem meskipun web sedang dibuka
+                    const title = payload.notification?.title || 'Pemberitahuan Baru';
+                    const options = {
+                        body: payload.notification?.body || '',
+                        icon: '/images/logo.png' // Ganti jika logo berbeda
+                    };
+                    new Notification(title, options);
+                    
+                    // Opsional: Reload otomatis halaman (atau perbarui angka lonceng pakai JS)
+                    // Biar simpel dan logo lonceng langsung update, kita reload aja saat notif masuk
+                    // Tapi lebih aman nggak ngereload paksa kalau user lagi ngetik. Kita cuma alert.
+                });
+            });
+    }
+</script>
 </body>
 </html>
 

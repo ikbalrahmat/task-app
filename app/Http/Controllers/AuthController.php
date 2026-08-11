@@ -38,15 +38,24 @@ class AuthController extends Controller
 
         // Verify Google reCAPTCHA v2 (Requirement 3)
         $recaptchaToken    = $request->input('g-recaptcha-response');
-        $recaptchaResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret'   => config('services.recaptcha.secret_key'),
-            'response' => $recaptchaToken,
-            'remoteip' => $request->ip(),
-        ]);
+        
+        try {
+            $recaptchaResponse = Http::asForm()
+                ->withoutVerifying() // Bypass local SSL issues on Windows/XAMPP
+                ->timeout(10)
+                ->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret'   => config('services.recaptcha.secret_key'),
+                    'response' => $recaptchaToken,
+                    'remoteip' => $request->ip(),
+                ]);
 
-        if (!$recaptchaResponse->json('success')) {
-            ActivityLogger::log('auth.captcha.failed', 'Login failed due to failed reCAPTCHA verification.');
-            return back()->withErrors(['email' => $genericError])->onlyInput('email');
+            if (!$recaptchaResponse->json('success')) {
+                ActivityLogger::log('auth.captcha.failed', 'Login failed due to failed reCAPTCHA verification.');
+                return back()->withErrors(['email' => $genericError])->onlyInput('email');
+            }
+        } catch (\Exception $e) {
+            ActivityLogger::log('auth.captcha.error', 'reCAPTCHA connection error: ' . $e->getMessage());
+            return back()->withErrors(['g-recaptcha-response' => 'Koneksi ke server reCAPTCHA (Google) terputus. Silakan periksa koneksi internet atau coba lagi.'])->onlyInput('email');
         }
 
         // Find user case-insensitively

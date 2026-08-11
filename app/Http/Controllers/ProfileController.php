@@ -98,4 +98,17 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Password berhasil diperbarui.');
     }
+
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+        $user->fcm_token = $request->token;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
 }
