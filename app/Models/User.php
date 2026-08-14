@@ -27,6 +27,7 @@ class User extends Authenticatable
         'login_attempts',
         'is_locked',
         'password_changed_at',
+        'fcm_token',
     ];
 
     protected $hidden = [
