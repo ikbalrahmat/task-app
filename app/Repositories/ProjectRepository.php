@@ -41,7 +41,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     private function buildQuery(array $filters = [])
     {
-        $query = Project::with(['tasks', 'creator', 'subprojects']);
+        $query = Project::with(['tasks', 'creator', 'subprojects', 'subprojects.tasks']);
 
         if (auth()->check() && !auth()->user()->hasCrudAccess()) {
             $query->whereHas('tasks.pics', fn($q) => $q->where('users.id', auth()->id()));

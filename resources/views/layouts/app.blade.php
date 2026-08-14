@@ -19,7 +19,7 @@
     @include('partials.sidebar')
 
     {{-- Main Content --}}
-    <div :class="sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'" class="flex-1 flex flex-col min-h-screen w-full transition-all duration-300">
+    <div :class="sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'" class="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden transition-all duration-300">
 
         {{-- Topbar --}}
         <header class="sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-md border-b border-[#e0e7ff] flex items-center justify-between px-4 sm:px-8">
